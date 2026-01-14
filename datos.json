@@ -1,0 +1,17 @@
+{
+    "total": {
+        "potencia": 59.236000000000004,
+        "energia_hoy": 118.27000000000001,
+        "energia_total": 142231.44
+    },
+    "sebadal": {
+        "potencia": "26.72",
+        "ultima_produccion_valor": 26.719,
+        "ultima_produccion_hora": "2025-08-08 11:45",
+        "uso_total": 56.5,
+        "produccion_total": 55.26,
+        "autoconsumo": 55.25,
+        "compra_red": 2.21
+    },
+    "actualizado": "2025-08-08 11:48:10"
+}
