@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -984,11 +985,11 @@
 
     function updateRotation(){
       const portrait = window.innerHeight > window.innerWidth
-      ui.root.style.transform = portrait ? "none" : "rotate(270deg)"
-      ui.root.style.width = portrait ? "100%" : "100vh"
-      ui.root.style.height = portrait ? "100%" : "100vw"
-      ui.root.style.left = portrait ? "0" : "calc((100vw - 100vh) / 2)"
-      ui.root.style.top = portrait ? "0" : "calc((100vh - 100vw) / 2)"
+      ui.root.style.transform = portrait ? "rotate(270deg)" : "none"
+      ui.root.style.width = portrait ? "100vh" : "100%"
+      ui.root.style.height = portrait ? "100vw" : "100%"
+      ui.root.style.left = portrait ? "calc((100vw - 100vh) / 2)" : "0"
+      ui.root.style.top = portrait ? "calc((100vh - 100vw) / 2)" : "0"
     }
 
     function profLoadFactor(t){
@@ -1070,7 +1071,7 @@
       const sebadalPot = Number(json?.sebadal?.potencia ?? totalPot ?? 0)
       const usoTotal = Number(json?.sebadal?.uso_total ?? 0)
       const prodTotal = Number(json?.sebadal?.produccion_total ?? 0)
-      const autoconsumo = Number(json?.sebadal?.autoconsumo ?? 0)
+      const energiaHoyKwh = Number(json?.total?.energia_hoy ?? 0)
       const compraRedPct = Number(json?.sebadal?.compra_red ?? 0)
       const actualizado = String(json?.actualizado ?? "")
 
@@ -1093,7 +1094,7 @@
       state.solarToBatKw = 0
       state.batToLoadKw = 0
 
-      state.solarKwhToday = round1(prodTotal || energiaHoy || state.solarKwhToday)
+      state.solarKwhToday = round1(prodTotal || energiaHoyKwh || state.solarKwhToday)
       state.loadKwhToday = round1(usoTotal || state.loadKwhToday)
 
       state.lastUpdatedLabel = actualizado ? `Última actualización: ${actualizado}` : `Última actualización: ${new Date().toLocaleString("es-ES")}`
@@ -1179,11 +1180,9 @@
 
       setChip(ui.chipSelf, `${round0(selfPct)}%`, selfPct >= 80 ? "ok" : selfPct >= 50 ? "warn" : "bad")
 
-      if(state.useLive){
-        ui.lastUpdate.textContent = state.lastUpdatedLabel || "Última actualización: —"
-      }else{
-        ui.lastUpdate.textContent = `Última actualización: ${state.lastUpdatedLabel}`
-      }
+      ui.lastUpdate.textContent = state.useLive
+        ? (state.lastUpdatedLabel || "Última actualización: —")
+        : (state.lastUpdatedLabel ? `Última actualización: ${state.lastUpdatedLabel}` : "Última actualización: —")
 
       const solarOn = state.solarKw > 1.2
       const gridOn = state.gridKw > 0.8
@@ -1275,6 +1274,9 @@
       window.addEventListener("resize", updateRotation)
     }
 
+    ui.mInterval.textContent = String((cfg.tickMs/1000).toFixed(1))
+    ui.mFetch.textContent = String(round0(cfg.fetchMs/1000))
+
     updateRotation()
     bind()
     setProfile("almacen")
@@ -1285,3 +1287,4 @@
   </script>
 </body>
 </html>
+```
