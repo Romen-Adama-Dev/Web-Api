@@ -1,1290 +1,797 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta http-equiv="refresh" content="3600" />
-  <title>Simulación | Alimentación Solar + Red</title>
-  <style>
-    :root{
-      --bg:#0b1220;
-      --panel:#0f1a30;
-      --panel2:#0c162b;
-      --stroke:rgba(255,255,255,.14);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.70);
-      --muted2:rgba(255,255,255,.55);
-      --ok:#2dd4bf;
-      --warn:#fbbf24;
-      --bad:#fb7185;
-      --blue:#60a5fa;
-      --violet:#a78bfa;
-      --shadow: 0 14px 40px rgba(0,0,0,.35);
-      --radius:16px;
-      --ring: 0 0 0 3px rgba(96,165,250,.25);
-      --font: system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIELCA - Monitor Fotovoltaico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    html,body{
-      height:100%;
-      margin:0;
-      background: radial-gradient(1200px 700px at 20% 10%, rgba(96,165,250,.25), transparent 55%),
-                  radial-gradient(1000px 700px at 80% 20%, rgba(167,139,250,.18), transparent 60%),
-                  radial-gradient(900px 700px at 30% 90%, rgba(45,212,191,.12), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      font-family: var(--font);
-      overflow:hidden;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f9fafb;
+            padding: 24px;
+            color: #111827;
+        }
 
-    .stage{
-      height:100%;
-      display:grid;
-      grid-template-rows: 68px 1fr 72px;
-      gap:12px;
-      padding: 12px;
-      box-sizing:border-box;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--stroke);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 12px 14px;
-      gap: 12px;
-      min-width: 0;
-    }
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
 
-    .badge{
-      width:42px;
-      height:42px;
-      border-radius:12px;
-      display:grid;
-      place-items:center;
-      background: linear-gradient(135deg, rgba(251,191,36,.20), rgba(96,165,250,.18));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 8px 20px rgba(0,0,0,.35);
-      flex:0 0 auto;
-    }
+        .header-title h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
 
-    .title{
-      display:flex;
-      flex-direction:column;
-      min-width:0;
-    }
+        .header-title p {
+            color: #6b7280;
+            font-size: 14px;
+        }
 
-    .title h1{
-      margin:0;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing:.2px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ecfdf5;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 14px;
+            color: #059669;
+            font-weight: 500;
+        }
 
-    .subtitle{
-      font-size: 12px;
-      color: var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
 
-    .header-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex:0 0 auto;
-    }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
 
-    .pill{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      color: var(--muted);
-      font-size: 12px;
-      user-select:none;
-    }
+        .timestamp {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 8px;
+        }
 
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background: var(--ok);
-      box-shadow: 0 0 0 3px rgba(45,212,191,.18);
-    }
+        /* Grid Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
 
-    .btn{
-      appearance:none;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 12px;
-      cursor:pointer;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    }
+        .stat-card {
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
 
-    .btn:focus-visible{ outline:none; box-shadow: var(--ring); }
-    .btn:active{ transform: translateY(1px); }
-    .btn:hover{ background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18); }
+        .stat-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
 
-    main{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:12px;
-      min-height:0;
-    }
+        .stat-card.yellow {
+            background: #fef9c3;
+            border-color: #fde047;
+        }
 
-    .panel{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--stroke);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      min-height:0;
-    }
+        .stat-card.blue {
+            background: #dbeafe;
+            border-color: #93c5fd;
+        }
 
-    .panel-inner{
-      height:100%;
-      display:grid;
-      grid-template-rows: auto 1fr;
-      min-height:0;
-    }
+        .stat-card.green {
+            background: #d1fae5;
+            border-color: #6ee7b7;
+        }
 
-    .panel-head{
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
+        .stat-card.red {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
 
-    .panel-head h2{
-      margin:0;
-      font-size: 13px;
-      font-weight: 700;
-      color: rgba(255,255,255,.9);
-      letter-spacing:.2px;
-    }
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
 
-    .panel-head small{
-      color: var(--muted);
-      font-size: 12px;
-      white-space:nowrap;
-    }
+        .stat-value {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
 
-    .diagram-wrap{
-      padding: 8px 10px 12px;
-      min-height:0;
-      display:grid;
-      grid-template-rows: 1fr auto;
-      gap:10px;
-    }
+        .stat-value .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #111827;
+        }
 
-    .diagram{
-      min-height:0;
-      width:100%;
-      height:100%;
-      border-radius: 14px;
-      background: linear-gradient(180deg, rgba(11,18,32,.75), rgba(11,18,32,.35));
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-      position:relative;
-    }
+        .stat-value .unit {
+            font-size: 16px;
+            font-weight: 500;
+            opacity: 0.7;
+        }
 
-    svg{
-      width:100%;
-      height:100%;
-      display:block;
-    }
+        .stat-label {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
 
-    .kpi-row{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-    }
+        /* Main Content Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
 
-    .kpi{
-      background: rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 14px;
-      padding: 10px 12px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      min-width:0;
-    }
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    .kpi .label{
-      font-size: 11px;
-      color: var(--muted2);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            padding: 24px;
+        }
 
-    .kpi .value{
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing:.2px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 20px;
+        }
 
-    .kpi .sub{
-      font-size: 11px;
-      color: var(--muted);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        /* Alarms Grid */
+        .alarms-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
 
-    .side{
-      display:grid;
-      grid-template-rows: 1fr 1fr;
-      gap:12px;
-      min-height:0;
-    }
+        .alarm-card {
+            border-radius: 8px;
+            padding: 16px;
+            border: 2px solid;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
 
-    .cards{
-      padding: 12px 14px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-      min-height:0;
-      overflow:auto;
-    }
+        .alarm-card.red {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #991b1b;
+        }
 
-    .card{
-      background: rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 14px;
-      padding: 12px;
-      display:grid;
-      gap:10px;
-    }
+        .alarm-card.orange {
+            background: #fed7aa;
+            border-color: #f97316;
+            color: #9a3412;
+        }
 
-    .card-top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
+        .alarm-card.yellow {
+            background: #fef3c7;
+            border-color: #eab308;
+            color: #854d0e;
+        }
 
-    .card-top strong{
-      font-size: 12px;
-      letter-spacing:.2px;
-    }
+        .alarm-card.blue {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
 
-    .chip{
-      font-size: 11px;
-      padding:6px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: var(--muted);
-      white-space:nowrap;
-    }
+        .alarm-type {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:8px 10px;
-    }
+        .alarm-count {
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-    .metric{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width:0;
-    }
+        /* Energy Flow */
+        .energy-flow {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(to bottom, #f0f9ff 0%, #ffffff 100%);
+            border-radius: 12px;
+            overflow: hidden;
+        }
 
-    .metric span{
-      font-size: 11px;
-      color: var(--muted2);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .flow-node {
+            position: absolute;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            border: 2px solid #d1d5db;
+            padding: 16px;
+            min-width: 180px;
+            z-index: 10;
+        }
 
-    .metric b{
-      font-size: 14px;
-      font-weight: 800;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .flow-node.active {
+            animation: glow 2s infinite;
+        }
 
-    .bar{
-      height:10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-    }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 4px 6px rgba(0,0,0,0.15); }
+            50% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.5); }
+        }
 
-    .bar > i{
-      display:block;
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(45,212,191,.9), rgba(96,165,250,.8));
-      border-radius:999px;
-      transition: width .5s ease;
-    }
+        .flow-node-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
 
-    footer{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding: 12px 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--stroke);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      min-width:0;
-    }
+        .flow-icon {
+            width: 32px;
+            height: 32px;
+        }
 
-    .foot-left{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width:0;
-    }
+        .flow-node-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #111827;
+        }
 
-    .foot-left .small{
-      color: var(--muted);
-      font-size: 12px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .flow-node-status {
+            font-size: 11px;
+            color: #6b7280;
+        }
 
-    .foot-left .tiny{
-      color: var(--muted2);
-      font-size: 11px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+        .flow-node-label {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
 
-    .seg{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex:0 0 auto;
-    }
+        .flow-node-value {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
 
-    .toggle{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 10px;
-      border-radius: 12px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      cursor:pointer;
-      user-select:none;
-      font-size:12px;
-      color: var(--muted);
-    }
+        .flow-node-value .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #111827;
+        }
 
-    .toggle input{
-      appearance:none;
-      width:44px;
-      height:26px;
-      border-radius:999px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.12);
-      position:relative;
-      outline:none;
-      cursor:pointer;
-      transition: background .15s ease, border-color .15s ease;
-    }
+        .flow-node-value .unit {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 600;
+        }
 
-    .toggle input:focus-visible{ box-shadow: var(--ring); }
-    .toggle input::after{
-      content:"";
-      width:20px;
-      height:20px;
-      position:absolute;
-      top:50%;
-      left:3px;
-      transform: translateY(-50%);
-      border-radius:999px;
-      background: rgba(255,255,255,.92);
-      transition: left .18s ease, background .15s ease;
-      box-shadow: 0 10px 22px rgba(0,0,0,.35);
-    }
+        /* Posicionamiento de nodos */
+        .node-solar {
+            top: 30px;
+            right: 80px;
+        }
 
-    .toggle input:checked{
-      background: rgba(45,212,191,.20);
-      border-color: rgba(45,212,191,.35);
-    }
+        .node-battery {
+            top: 200px;
+            left: 40px;
+        }
 
-    .toggle input:checked::after{
-      left: 21px;
-      background: rgba(45,212,191,.92);
-    }
+        .node-grid {
+            top: 30px;
+            left: 80px;
+        }
 
-    .rot270{
-      position:fixed;
-      inset:0;
-      transform: rotate(270deg);
-      transform-origin: center center;
-      width:100vh;
-      height:100vw;
-      left: calc((100vw - 100vh) / 2);
-      top: calc((100vh - 100vw) / 2);
-    }
+        .node-load {
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
-    @media (max-width: 920px){
-      main{ grid-template-columns: 1fr; }
-      .side{ grid-template-rows: auto auto; }
-      .kpi-row{ grid-template-columns: 1fr; }
-    }
-  </style>
+        /* SVG Cables */
+        .flow-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .flow-line {
+            stroke: #2563eb;
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 10;
+            animation: dash 1s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+
+        /* Environmental Benefits */
+        .env-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .env-card {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+        }
+
+        .env-icon {
+            width: 32px;
+            height: 32px;
+            color: #059669;
+            flex-shrink: 0;
+        }
+
+        .env-value {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .env-value .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .env-value .unit {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .env-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .footer-brand {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .footer-brand strong {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .footer-tagline {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        /* Icons SVG */
+        .icon {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
-  <div class="rot270" id="root">
-    <div class="stage" role="application" aria-label="Simulación de alimentación eléctrica de almacén">
-      <header>
-        <div class="brand">
-          <div class="badge" aria-hidden="true">☀️</div>
-          <div class="title">
-            <h1>Monitor Solar | Almacén</h1>
-            <div class="subtitle" id="statusLine">Simulación activa · Flujo en tiempo real</div>
-          </div>
-        </div>
-
-        <div class="header-right">
-          <div class="pill" aria-live="polite">
-            <span class="dot" id="liveDot" aria-hidden="true"></span>
-            <span id="lastUpdate">Cargando…</span>
-          </div>
-          <button class="btn" id="btnReset" type="button">Reiniciar</button>
-        </div>
-      </header>
-
-      <main>
-        <section class="panel" aria-label="Diagrama de alimentación">
-          <div class="panel-inner">
-            <div class="panel-head">
-              <h2>Diagrama de energía</h2>
-              <small id="modeLabel">Modo: Simulación</small>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>DIELCA</h1>
+                    <p>Monitor de instalación fotovoltaica en tiempo real</p>
+                </div>
+                <div>
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        Datos en vivo
+                    </div>
+                    <div class="timestamp" id="timestamp">--</div>
+                </div>
             </div>
+        </div>
 
-            <div class="diagram-wrap">
-              <div class="diagram" aria-label="Diagrama SVG con flujos">
-                <svg viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Flujo Solar hacia inversor, batería, red y consumo del almacén">
-                  <defs>
-                    <linearGradient id="gSolar" x1="0" x2="1">
-                      <stop offset="0" stop-color="rgba(251,191,36,.95)"/>
-                      <stop offset="1" stop-color="rgba(96,165,250,.85)"/>
-                    </linearGradient>
-
-                    <linearGradient id="gGrid" x1="0" x2="1">
-                      <stop offset="0" stop-color="rgba(96,165,250,.95)"/>
-                      <stop offset="1" stop-color="rgba(167,139,250,.85)"/>
-                    </linearGradient>
-
-                    <linearGradient id="gLoad" x1="0" x2="1">
-                      <stop offset="0" stop-color="rgba(45,212,191,.95)"/>
-                      <stop offset="1" stop-color="rgba(96,165,250,.80)"/>
-                    </linearGradient>
-
-                    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="6" result="b"/>
-                      <feColorMatrix in="b" type="matrix"
-                        values="1 0 0 0 0
-                                0 1 0 0 0
-                                0 0 1 0 0
-                                0 0 0 .35 0" result="s"/>
-                      <feMerge>
-                        <feMergeNode in="s"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-
-                    <path id="pSolarToInv" d="M 210 210 C 360 210, 420 210, 500 210" />
-                    <path id="pGridToInv"  d="M 210 430 C 360 430, 420 430, 500 430" />
-                    <path id="pInvToLoad"  d="M 700 320 C 820 320, 900 320, 1020 320" />
-                    <path id="pInvToBat"   d="M 620 240 C 620 260, 620 280, 620 300" />
-                    <path id="pBatToInv"   d="M 620 400 C 620 380, 620 360, 620 340" />
-
-                    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
-                      <path d="M 0 0 L 12 6 L 0 12 z" fill="rgba(255,255,255,.75)"></path>
-                    </marker>
-                  </defs>
-
-                  <rect x="22" y="22" width="1156" height="596" rx="20" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)"/>
-
-                  <g filter="url(#soft)">
-                    <g>
-                      <rect x="70" y="120" width="240" height="180" rx="18" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.14)"/>
-                      <text x="92" y="155" fill="rgba(255,255,255,.92)" font-size="18" font-weight="800">Placas solares</text>
-                      <text x="92" y="188" fill="rgba(255,255,255,.65)" font-size="13">Producción</text>
-                      <text x="92" y="224" fill="rgba(255,255,255,.95)" font-size="40" font-weight="900" id="svgSolarKw">0.0</text>
-                      <text x="198" y="224" fill="rgba(255,255,255,.70)" font-size="18" font-weight="700">kW</text>
-
-                      <g opacity=".9">
-                        <circle cx="252" cy="158" r="22" fill="rgba(251,191,36,.20)" stroke="rgba(251,191,36,.45)"/>
-                        <text x="244" y="165" fill="rgba(251,191,36,.95)" font-size="20">☀</text>
-                      </g>
-                    </g>
-
-                    <g>
-                      <rect x="70" y="340" width="240" height="180" rx="18" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.14)"/>
-                      <text x="92" y="375" fill="rgba(255,255,255,.92)" font-size="18" font-weight="800">Red eléctrica</text>
-                      <text x="92" y="408" fill="rgba(255,255,255,.65)" font-size="13">Compra / Apoyo</text>
-                      <text x="92" y="444" fill="rgba(255,255,255,.95)" font-size="40" font-weight="900" id="svgGridKw">0.0</text>
-                      <text x="198" y="444" fill="rgba(255,255,255,.70)" font-size="18" font-weight="700">kW</text>
-
-                      <g opacity=".9">
-                        <circle cx="252" cy="378" r="22" fill="rgba(96,165,250,.16)" stroke="rgba(96,165,250,.40)"/>
-                        <text x="244" y="386" fill="rgba(96,165,250,.95)" font-size="18">⚡</text>
-                      </g>
-                    </g>
-
-                    <g>
-                      <rect x="470" y="190" width="300" height="260" rx="18" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)"/>
-                      <text x="492" y="228" fill="rgba(255,255,255,.92)" font-size="18" font-weight="800">Inversor / Gestión</text>
-                      <text x="492" y="258" fill="rgba(255,255,255,.65)" font-size="13">Distribución de energía</text>
-
-                      <rect x="492" y="290" width="256" height="16" rx="999" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.12)"/>
-                      <rect x="492" y="290" width="0" height="16" rx="999" fill="url(#gLoad)" id="svgInvBar"/>
-
-                      <text x="492" y="345" fill="rgba(255,255,255,.80)" font-size="12">Carga del inversor</text>
-                      <text x="492" y="382" fill="rgba(255,255,255,.95)" font-size="34" font-weight="900" id="svgInvPct">0</text>
-                      <text x="540" y="382" fill="rgba(255,255,255,.70)" font-size="16" font-weight="700">%</text>
-
-                      <g opacity=".9">
-                        <circle cx="732" cy="226" r="20" fill="rgba(45,212,191,.14)" stroke="rgba(45,212,191,.40)"/>
-                        <text x="724" y="233" fill="rgba(45,212,191,.95)" font-size="16">⎓</text>
-                      </g>
-                    </g>
-
-                    <g>
-                      <rect x="520" y="470" width="200" height="130" rx="18" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.14)"/>
-                      <text x="542" y="505" fill="rgba(255,255,255,.92)" font-size="16" font-weight="800">Batería</text>
-                      <text x="542" y="530" fill="rgba(255,255,255,.65)" font-size="12">Estado de carga</text>
-
-                      <rect x="542" y="548" width="156" height="18" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.12)"/>
-                      <rect x="542" y="548" width="0" height="18" rx="8" fill="url(#gSolar)" id="svgBatBar"/>
-
-                      <text x="542" y="592" fill="rgba(255,255,255,.95)" font-size="26" font-weight="900" id="svgBatPct">0</text>
-                      <text x="578" y="592" fill="rgba(255,255,255,.70)" font-size="14" font-weight="700">%</text>
-                    </g>
-
-                    <g>
-                      <rect x="900" y="230" width="240" height="220" rx="18" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)"/>
-                      <text x="922" y="268" fill="rgba(255,255,255,.92)" font-size="18" font-weight="800">Almacén</text>
-                      <text x="922" y="298" fill="rgba(255,255,255,.65)" font-size="13">Consumo total</text>
-
-                      <text x="922" y="345" fill="rgba(255,255,255,.95)" font-size="42" font-weight="900" id="svgLoadKw">0.0</text>
-                      <text x="1030" y="345" fill="rgba(255,255,255,.70)" font-size="18" font-weight="700">kW</text>
-
-                      <text x="922" y="388" fill="rgba(255,255,255,.65)" font-size="12">Autoconsumo</text>
-                      <text x="922" y="418" fill="rgba(255,255,255,.92)" font-size="20" font-weight="900" id="svgSelfPct">0</text>
-                      <text x="952" y="418" fill="rgba(255,255,255,.65)" font-size="12">%</text>
-
-                      <g opacity=".9">
-                        <circle cx="1102" cy="268" r="20" fill="rgba(167,139,250,.14)" stroke="rgba(167,139,250,.40)"/>
-                        <text x="1094" y="275" fill="rgba(167,139,250,.95)" font-size="16">🏭</text>
-                      </g>
-                    </g>
-                  </g>
-
-                  <g fill="none" stroke="rgba(255,255,255,.18)" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)" opacity=".65">
-                    <use href="#pSolarToInv"/>
-                    <use href="#pGridToInv"/>
-                    <use href="#pInvToLoad"/>
-                    <path d="M 620 450 C 620 455, 620 462, 620 470" />
-                    <path d="M 620 470 C 620 455, 620 445, 620 440" opacity="0"/>
-                  </g>
-
-                  <g id="flowSolar" opacity="0">
-                    <circle r="7" fill="url(#gSolar)">
-                      <animateMotion dur="2.2s" repeatCount="indefinite" path="M 210 210 C 360 210, 420 210, 500 210"/>
-                    </circle>
-                    <circle r="5" fill="rgba(251,191,36,.9)">
-                      <animateMotion dur="2.2s" begin="0.7s" repeatCount="indefinite" path="M 210 210 C 360 210, 420 210, 500 210"/>
-                    </circle>
-                  </g>
-
-                  <g id="flowGrid" opacity="0">
-                    <circle r="7" fill="url(#gGrid)">
-                      <animateMotion dur="2.4s" repeatCount="indefinite" path="M 210 430 C 360 430, 420 430, 500 430"/>
-                    </circle>
-                    <circle r="5" fill="rgba(96,165,250,.95)">
-                      <animateMotion dur="2.4s" begin="0.9s" repeatCount="indefinite" path="M 210 430 C 360 430, 420 430, 500 430"/>
-                    </circle>
-                  </g>
-
-                  <g id="flowToLoad" opacity="0">
-                    <circle r="7" fill="url(#gLoad)">
-                      <animateMotion dur="2.0s" repeatCount="indefinite" path="M 700 320 C 820 320, 900 320, 1020 320"/>
-                    </circle>
-                    <circle r="5" fill="rgba(45,212,191,.95)">
-                      <animateMotion dur="2.0s" begin="0.6s" repeatCount="indefinite" path="M 700 320 C 820 320, 900 320, 1020 320"/>
-                    </circle>
-                  </g>
-
-                  <g id="flowToBat" opacity="0">
-                    <circle r="6" fill="url(#gSolar)">
-                      <animateMotion dur="1.6s" repeatCount="indefinite" path="M 620 270 C 620 300, 620 330, 620 360"/>
-                    </circle>
-                    <circle r="4" fill="rgba(251,191,36,.95)">
-                      <animateMotion dur="1.6s" begin="0.55s" repeatCount="indefinite" path="M 620 270 C 620 300, 620 330, 620 360"/>
-                    </circle>
-                  </g>
-
-                  <g id="flowFromBat" opacity="0">
-                    <circle r="6" fill="url(#gLoad)">
-                      <animateMotion dur="1.6s" repeatCount="indefinite" path="M 620 430 C 620 400, 620 370, 620 340"/>
-                    </circle>
-                    <circle r="4" fill="rgba(45,212,191,.95)">
-                      <animateMotion dur="1.6s" begin="0.55s" repeatCount="indefinite" path="M 620 430 C 620 400, 620 370, 620 340"/>
-                    </circle>
-                  </g>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card yellow">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                 </svg>
-              </div>
-
-              <div class="kpi-row" aria-label="KPIs principales">
-                <div class="kpi">
-                  <div class="label">Producción solar</div>
-                  <div class="value"><span id="kpiSolar">0.0</span> kW</div>
-                  <div class="sub"><span>Hoy</span><span><span id="kpiSolarKwh">0.0</span> kWh</span></div>
+                <div class="stat-value">
+                    <span class="number" id="energia-hoy">--</span>
+                    <span class="unit">kWh</span>
                 </div>
-                <div class="kpi">
-                  <div class="label">Consumo almacén</div>
-                  <div class="value"><span id="kpiLoad">0.0</span> kW</div>
-                  <div class="sub"><span>Hoy</span><span><span id="kpiLoadKwh">0.0</span> kWh</span></div>
-                </div>
-                <div class="kpi">
-                  <div class="label">Compra a red</div>
-                  <div class="value"><span id="kpiGrid">0.0</span> kW</div>
-                  <div class="sub"><span>Autoconsumo</span><span><span id="kpiSelf">0</span>%</span></div>
-                </div>
-              </div>
+                <div class="stat-label">Rendimiento hoy</div>
             </div>
-          </div>
-        </section>
 
-        <aside class="side" aria-label="Paneles de detalle">
-          <section class="panel" aria-label="Detalle de planta y consumo">
-            <div class="panel-inner">
-              <div class="panel-head">
-                <h2>Detalle</h2>
-                <small id="siteName">El Sebadal</small>
-              </div>
-              <div class="cards">
-                <div class="card">
-                  <div class="card-top">
-                    <strong>Distribución instantánea</strong>
-                    <span class="chip" id="chipBalance">Balance OK</span>
-                  </div>
-                  <div class="grid">
-                    <div class="metric">
-                      <span>Solar → Carga</span>
-                      <b><span id="mSolarToLoad">0.0</span> kW</b>
-                    </div>
-                    <div class="metric">
-                      <span>Red → Carga</span>
-                      <b><span id="mGridToLoad">0.0</span> kW</b>
-                    </div>
-                    <div class="metric">
-                      <span>Solar → Batería</span>
-                      <b><span id="mSolarToBat">0.0</span> kW</b>
-                    </div>
-                    <div class="metric">
-                      <span>Batería → Carga</span>
-                      <b><span id="mBatToLoad">0.0</span> kW</b>
-                    </div>
-                  </div>
+            <div class="stat-card blue">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <div class="stat-value">
+                    <span class="number">--</span>
+                    <span class="unit">kWh</span>
                 </div>
-
-                <div class="card">
-                  <div class="card-top">
-                    <strong>Batería</strong>
-                    <span class="chip" id="chipBat">SOC</span>
-                  </div>
-                  <div class="grid">
-                    <div class="metric">
-                      <span>Estado</span>
-                      <b><span id="mBatSoc">0</span>%</b>
-                    </div>
-                    <div class="metric">
-                      <span>Potencia</span>
-                      <b><span id="mBatKw">0.0</span> kW</b>
-                    </div>
-                  </div>
-                  <div class="bar" role="progressbar" aria-label="Estado de carga de batería" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                    <i id="batBar"></i>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-top">
-                    <strong>Autoconsumo</strong>
-                    <span class="chip" id="chipSelf">%</span>
-                  </div>
-                  <div class="grid">
-                    <div class="metric">
-                      <span>Instantáneo</span>
-                      <b><span id="mSelfPct">0</span>%</b>
-                    </div>
-                    <div class="metric">
-                      <span>Compra a red</span>
-                      <b><span id="mGridPct">0</span>%</b>
-                    </div>
-                  </div>
-                  <div class="bar" role="progressbar" aria-label="Autoconsumo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                    <i id="selfBar"></i>
-                  </div>
-                </div>
-              </div>
+                <div class="stat-label">Suministro desde la red de hoy</div>
             </div>
-          </section>
 
-          <section class="panel" aria-label="Control de modo y fuente de datos">
-            <div class="panel-inner">
-              <div class="panel-head">
-                <h2>Control</h2>
-                <small id="controlHint">Simulación o datos.json</small>
-              </div>
-              <div class="cards">
-                <div class="card">
-                  <div class="card-top">
-                    <strong>Modo</strong>
-                    <span class="chip" id="chipMode">Simulación</span>
-                  </div>
-                  <label class="toggle" for="chkLive">
-                    <span>Usar datos reales (datos.json)</span>
-                    <input id="chkLive" type="checkbox" />
-                  </label>
-                  <div class="grid">
-                    <div class="metric">
-                      <span>Intervalo</span>
-                      <b><span id="mInterval">1.0</span>s</b>
-                    </div>
-                    <div class="metric">
-                      <span>Refresco datos.json</span>
-                      <b><span id="mFetch">70</span>s</b>
-                    </div>
-                  </div>
+            <div class="stat-card green">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                <div class="stat-value">
+                    <span class="number" id="energia-total">--</span>
+                    <span class="unit">MWh</span>
                 </div>
-
-                <div class="card">
-                  <div class="card-top">
-                    <strong>Perfil de consumo</strong>
-                    <span class="chip" id="chipProfile">Almacén</span>
-                  </div>
-                  <div class="grid">
-                    <button class="btn" type="button" data-profile="almacen">Almacén</button>
-                    <button class="btn" type="button" data-profile="picos">Picos</button>
-                    <button class="btn" type="button" data-profile="noche">Noche</button>
-                    <button class="btn" type="button" data-profile="estable">Estable</button>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-top">
-                    <strong>Escala</strong>
-                    <span class="chip" id="chipScale">kW</span>
-                  </div>
-                  <div class="grid">
-                    <div class="metric">
-                      <span>Solar máx</span>
-                      <b><span id="mSolarMax">90</span> kW</b>
-                    </div>
-                    <div class="metric">
-                      <span>Carga máx</span>
-                      <b><span id="mLoadMax">120</span> kW</b>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <div class="stat-label">Rendimiento total</div>
             </div>
-          </section>
-        </aside>
-      </main>
 
-      <footer>
-        <div class="foot-left">
-          <div class="small" id="footLine">Balance: Solar + Red + Batería = Consumo</div>
-          <div class="tiny" id="footSub">Flujos animados según reparto instantáneo</div>
+            <div class="stat-card red">
+                <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                <div class="stat-value">
+                    <span class="number">0,00</span>
+                    <span class="unit">€</span>
+                </div>
+                <div class="stat-label">Ingresos hoy</div>
+            </div>
         </div>
 
-        <div class="seg">
-          <span class="pill" aria-label="Reloj de simulación">
-            <span style="opacity:.85">⏱</span>
-            <span id="simClock">00:00</span>
-          </span>
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Alarms -->
+            <div class="card">
+                <h3 class="card-title">Estado del Sistema</h3>
+                <div class="alarms-grid">
+                    <div class="alarm-card red">
+                        <div class="alarm-type">Críticas</div>
+                        <div class="alarm-count">0</div>
+                    </div>
+                    <div class="alarm-card orange">
+                        <div class="alarm-type">Mayor</div>
+                        <div class="alarm-count">0</div>
+                    </div>
+                    <div class="alarm-card yellow">
+                        <div class="alarm-type">Menores</div>
+                        <div class="alarm-count">0</div>
+                    </div>
+                    <div class="alarm-card blue">
+                        <div class="alarm-type">Aviso</div>
+                        <div class="alarm-count">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Energy Flow -->
+            <div class="card">
+                <h3 class="card-title">
+                    <svg class="icon" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Flujo de Energía en Tiempo Real
+                </h3>
+                <div class="energy-flow">
+                    <svg class="flow-svg" id="flowSvg">
+                        <!-- Las líneas se dibujarán dinámicamente -->
+                    </svg>
+
+                    <!-- Nodo Solar -->
+                    <div class="flow-node node-solar active" id="node-solar">
+                        <div class="flow-node-header">
+                            <svg class="flow-icon" style="color: #ca8a04;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                            <div>
+                                <div class="flow-node-title">Paneles Solares</div>
+                            </div>
+                        </div>
+                        <div class="flow-node-label">Potencia de salida</div>
+                        <div class="flow-node-value">
+                            <span class="number" id="solar-power">0.000</span>
+                            <span class="unit">kW</span>
+                        </div>
+                    </div>
+
+                    <!-- Nodo Batería -->
+                    <div class="flow-node node-battery" id="node-battery">
+                        <div class="flow-node-header">
+                            <svg class="flow-icon" style="color: #2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                            <div>
+                                <div class="flow-node-title">Batería</div>
+                                <div class="flow-node-status">Sin control</div>
+                            </div>
+                        </div>
+                        <div class="flow-node-label">Energía actual</div>
+                        <div class="flow-node-value">
+                            <span class="number" id="battery-power">0.000</span>
+                            <span class="unit">kW</span>
+                        </div>
+                        <div class="flow-node-label" style="margin-top: 8px;">SOC: <span id="battery-soc">6.0</span>%</div>
+                    </div>
+
+                    <!-- Nodo Red -->
+                    <div class="flow-node node-grid" id="node-grid">
+                        <div class="flow-node-header">
+                            <svg class="flow-icon" style="color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <div>
+                                <div class="flow-node-title">Red Eléctrica</div>
+                            </div>
+                        </div>
+                        <div class="flow-node-label">Energía actual</div>
+                        <div class="flow-node-value">
+                            <span class="number" id="grid-power">0.000</span>
+                            <span class="unit">kW</span>
+                        </div>
+                    </div>
+
+                    <!-- Nodo Carga (Edificio) -->
+                    <div class="flow-node node-load active" id="node-load">
+                        <div class="flow-node-header">
+                            <svg class="flow-icon" style="color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            <div>
+                                <div class="flow-node-title">Edificio / Carga</div>
+                            </div>
+                        </div>
+                        <div class="flow-node-label">Energía de consumo</div>
+                        <div class="flow-node-value">
+                            <span class="number" id="load-power">0.000</span>
+                            <span class="unit">kW</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </footer>
+
+        <!-- Environmental Benefits -->
+        <div class="card">
+            <h3 class="card-title">
+                <svg class="icon" style="width: 20px; height: 20px; margin-right: 8px; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+                Beneficios Medioambientales
+            </h3>
+            <div class="env-grid">
+                <div class="env-card">
+                    <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                    </svg>
+                    <div>
+                        <div class="env-value">
+                            <span class="number">35,18</span>
+                            <span class="unit">toneladas</span>
+                        </div>
+                        <div class="env-label">Ahorro estándar de carbón</div>
+                    </div>
+                </div>
+
+                <div class="env-card">
+                    <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                    </svg>
+                    <div>
+                        <div class="env-value">
+                            <span class="number">41,77</span>
+                            <span class="unit">toneladas</span>
+                        </div>
+                        <div class="env-label">CO₂ evitado</div>
+                    </div>
+                </div>
+
+                <div class="env-card">
+                    <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                    <div>
+                        <div class="env-value">
+                            <span class="number">58</span>
+                            <span class="unit"></span>
+                        </div>
+                        <div class="env-label">Árboles equivalentes plantados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-brand">
+                <strong>DIELCA</strong> - Distribución de Material Eléctrico
+            </p>
+            <p class="footer-tagline">40 años de experiencia en Canarias</p>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const $ = (id) => document.getElementById(id)
-
-    const ui = {
-      lastUpdate: $("lastUpdate"),
-      statusLine: $("statusLine"),
-      modeLabel: $("modeLabel"),
-      siteName: $("siteName"),
-      liveDot: $("liveDot"),
-      chkLive: $("chkLive"),
-      btnReset: $("btnReset"),
-
-      kpiSolar: $("kpiSolar"),
-      kpiSolarKwh: $("kpiSolarKwh"),
-      kpiLoad: $("kpiLoad"),
-      kpiLoadKwh: $("kpiLoadKwh"),
-      kpiGrid: $("kpiGrid"),
-      kpiSelf: $("kpiSelf"),
-
-      svgSolarKw: $("svgSolarKw"),
-      svgGridKw: $("svgGridKw"),
-      svgLoadKw: $("svgLoadKw"),
-      svgSelfPct: $("svgSelfPct"),
-      svgInvPct: $("svgInvPct"),
-      svgInvBar: $("svgInvBar"),
-      svgBatPct: $("svgBatPct"),
-      svgBatBar: $("svgBatBar"),
-
-      flowSolar: $("flowSolar"),
-      flowGrid: $("flowGrid"),
-      flowToLoad: $("flowToLoad"),
-      flowToBat: $("flowToBat"),
-      flowFromBat: $("flowFromBat"),
-
-      mSolarToLoad: $("mSolarToLoad"),
-      mGridToLoad: $("mGridToLoad"),
-      mSolarToBat: $("mSolarToBat"),
-      mBatToLoad: $("mBatToLoad"),
-
-      mBatSoc: $("mBatSoc"),
-      mBatKw: $("mBatKw"),
-      batBar: $("batBar"),
-
-      mSelfPct: $("mSelfPct"),
-      mGridPct: $("mGridPct"),
-      selfBar: $("selfBar"),
-
-      chipBalance: $("chipBalance"),
-      chipBat: $("chipBat"),
-      chipSelf: $("chipSelf"),
-      chipMode: $("chipMode"),
-      chipProfile: $("chipProfile"),
-
-      mInterval: $("mInterval"),
-      mFetch: $("mFetch"),
-      mSolarMax: $("mSolarMax"),
-      mLoadMax: $("mLoadMax"),
-
-      footLine: $("footLine"),
-      footSub: $("footSub"),
-      simClock: $("simClock"),
-      root: $("root"),
-    }
-
-    const clamp = (n, a, b) => Math.max(a, Math.min(b, n))
-    const round1 = (n) => Math.round(n * 10) / 10
-    const round0 = (n) => Math.round(n)
-    const pad2 = (n) => String(n).padStart(2, "0")
-
-    const cfg = {
-      tickMs: 1000,
-      fetchMs: 70000,
-      solarMax: 90,
-      loadMax: 120,
-      batCapacityKwh: 180,
-      batMaxChargeKw: 40,
-      batMaxDischargeKw: 40,
-      socMin: 15,
-      socMax: 95,
-    }
-
-    const state = {
-      useLive: false,
-      profile: "almacen",
-      t0: Date.now(),
-      simSec: 0,
-
-      solarKw: 0,
-      loadKw: 0,
-      gridKw: 0,
-      batKw: 0,
-      batSoc: 62,
-
-      solarToLoadKw: 0,
-      gridToLoadKw: 0,
-      solarToBatKw: 0,
-      batToLoadKw: 0,
-
-      solarKwhToday: 0,
-      loadKwhToday: 0,
-      lastTs: 0,
-      lastUpdatedLabel: "",
-    }
-
-    function setChip(el, text, tone){
-      el.textContent = text
-      el.style.borderColor = "rgba(255,255,255,.12)"
-      el.style.background = "rgba(255,255,255,.05)"
-      el.style.color = "rgba(255,255,255,.75)"
-
-      if(tone === "ok"){
-        el.style.borderColor = "rgba(45,212,191,.35)"
-        el.style.background = "rgba(45,212,191,.12)"
-        el.style.color = "rgba(45,212,191,.95)"
-      }
-      if(tone === "warn"){
-        el.style.borderColor = "rgba(251,191,36,.38)"
-        el.style.background = "rgba(251,191,36,.12)"
-        el.style.color = "rgba(251,191,36,.95)"
-      }
-      if(tone === "bad"){
-        el.style.borderColor = "rgba(251,113,133,.40)"
-        el.style.background = "rgba(251,113,133,.12)"
-        el.style.color = "rgba(251,113,133,.95)"
-      }
-      if(tone === "blue"){
-        el.style.borderColor = "rgba(96,165,250,.40)"
-        el.style.background = "rgba(96,165,250,.12)"
-        el.style.color = "rgba(96,165,250,.95)"
-      }
-    }
-
-    function updateRotation(){
-      const portrait = window.innerHeight > window.innerWidth
-      ui.root.style.transform = portrait ? "rotate(270deg)" : "none"
-      ui.root.style.width = portrait ? "100vh" : "100%"
-      ui.root.style.height = portrait ? "100vw" : "100%"
-      ui.root.style.left = portrait ? "calc((100vw - 100vh) / 2)" : "0"
-      ui.root.style.top = portrait ? "calc((100vh - 100vw) / 2)" : "0"
-    }
-
-    function profLoadFactor(t){
-      const base = (() => {
-        if(state.profile === "estable") return 0.62 + 0.04*Math.sin(t/17)
-        if(state.profile === "noche") return 0.32 + 0.05*Math.sin(t/19)
-        if(state.profile === "picos") return 0.55 + 0.28*Math.max(0, Math.sin(t/8)) + 0.08*Math.sin(t/3.7)
-        return 0.48 + 0.18*Math.max(0, Math.sin(t/10)) + 0.08*Math.sin(t/4.2)
-      })()
-      return clamp(base, 0.18, 0.95)
-    }
-
-    function profSolarFactor(t){
-      const dayWave = 0.55 + 0.45*Math.max(0, Math.sin((t % 3600) / 3600 * Math.PI))
-      const clouds = 0.88 + 0.12*Math.sin(t/13) + 0.08*Math.sin(t/5.7)
-      const factor = clamp(dayWave * clamp(clouds, 0.65, 1.08), 0, 1.05)
-      return factor
-    }
-
-    function stepSim(dtSec){
-      const t = state.simSec
-      const solar = cfg.solarMax * profSolarFactor(t)
-      const load = cfg.loadMax * profLoadFactor(t)
-
-      const soc = state.batSoc
-      const canCharge = soc < cfg.socMax
-      const canDischarge = soc > cfg.socMin
-
-      let solarToLoad = Math.min(solar, load)
-      let remainingLoad = load - solarToLoad
-
-      let solarExcess = solar - solarToLoad
-      let solarToBat = 0
-      if(solarExcess > 0 && canCharge){
-        solarToBat = Math.min(solarExcess, cfg.batMaxChargeKw)
-      }
-
-      let batToLoad = 0
-      if(remainingLoad > 0 && canDischarge){
-        batToLoad = Math.min(remainingLoad, cfg.batMaxDischargeKw)
-        remainingLoad -= batToLoad
-      }
-
-      const gridToLoad = Math.max(0, remainingLoad)
-
-      const batKw = solarToBat > 0 ? solarToBat : -batToLoad
-
-      const batDeltaKwh = (batKw * dtSec) / 3600
-      const batEnergyKwh = (soc/100) * cfg.batCapacityKwh
-      const nextEnergy = clamp(batEnergyKwh + batDeltaKwh, 0, cfg.batCapacityKwh)
-      const nextSoc = (nextEnergy / cfg.batCapacityKwh) * 100
-
-      state.solarKw = round1(solar)
-      state.loadKw = round1(load)
-      state.gridKw = round1(gridToLoad)
-      state.batKw = round1(batKw)
-      state.batSoc = round0(nextSoc)
-
-      state.solarToLoadKw = round1(solarToLoad)
-      state.solarToBatKw = round1(solarToBat)
-      state.batToLoadKw = round1(batToLoad)
-      state.gridToLoadKw = round1(gridToLoad)
-
-      state.solarKwhToday = round1(state.solarKwhToday + (state.solarKw * dtSec)/3600)
-      state.loadKwhToday = round1(state.loadKwhToday + (state.loadKw * dtSec)/3600)
-
-      state.lastUpdatedLabel = new Date().toLocaleString("es-ES", {
-        year:"numeric", month:"2-digit", day:"2-digit",
-        hour:"2-digit", minute:"2-digit", second:"2-digit"
-      })
-      state.lastTs = Date.now()
-    }
-
-    function mapFromLive(json){
-      const totalPot = Number(json?.total?.potencia ?? 0)
-      const energiaHoy = Number(json?.total?.energia_hoy ?? 0)
-      const energiaTotal = Number(json?.total?.energia_total ?? 0)
-
-      const sebadalPot = Number(json?.sebadal?.potencia ?? totalPot ?? 0)
-      const usoTotal = Number(json?.sebadal?.uso_total ?? 0)
-      const prodTotal = Number(json?.sebadal?.produccion_total ?? 0)
-      const energiaHoyKwh = Number(json?.total?.energia_hoy ?? 0)
-      const compraRedPct = Number(json?.sebadal?.compra_red ?? 0)
-      const actualizado = String(json?.actualizado ?? "")
-
-      const loadKw = clamp(sebadalPot * (0.85 + 0.2*Math.sin((Date.now()/1000)/9)), 0, cfg.loadMax)
-      const gridPct = clamp(compraRedPct, 0, 100)
-      const gridKw = round1(loadKw * (gridPct / 100))
-      const solarKw = round1(Math.max(0, loadKw - gridKw))
-
-      state.solarKw = round1(solarKw)
-      state.loadKw = round1(loadKw)
-      state.gridKw = round1(gridKw)
-      state.batKw = 0
-
-      const selfPct = loadKw > 0 ? clamp(((loadKw - gridKw)/loadKw)*100, 0, 100) : 0
-      const targetSoc = clamp(60 + 25*Math.sin((Date.now()/1000)/60), 20, 95)
-      state.batSoc = round0(targetSoc)
-
-      state.solarToLoadKw = round1(Math.min(state.solarKw, state.loadKw))
-      state.gridToLoadKw = round1(state.gridKw)
-      state.solarToBatKw = 0
-      state.batToLoadKw = 0
-
-      state.solarKwhToday = round1(prodTotal || energiaHoyKwh || state.solarKwhToday)
-      state.loadKwhToday = round1(usoTotal || state.loadKwhToday)
-
-      state.lastUpdatedLabel = actualizado ? `Última actualización: ${actualizado}` : `Última actualización: ${new Date().toLocaleString("es-ES")}`
-      state.lastTs = Date.now()
-
-      ui.siteName.textContent = "El Sebadal"
-      ui.footSub.textContent = energiaTotal ? `Energía total acumulada: ${energiaTotal} kWh` : "Flujos animados según reparto instantáneo"
-      return { ok: true }
-    }
-
-    async function tryFetchLive(){
-      try{
-        const res = await fetch("datos.json?ts=" + Date.now(), { cache:"no-store" })
-        if(!res.ok) throw new Error("http " + res.status)
-        const json = await res.json()
-        return mapFromLive(json)
-      }catch(e){
-        return { ok: false }
-      }
-    }
-
-    function setFlowVis(el, on){
-      el.style.opacity = on ? "1" : "0"
-    }
-
-    function render(){
-      const solar = state.solarKw
-      const load = state.loadKw
-      const grid = state.gridKw
-      const soc = state.batSoc
-      const batKw = state.batKw
-
-      const selfPct = load > 0 ? clamp(((load - grid)/load)*100, 0, 100) : 0
-      const gridPct = 100 - selfPct
-
-      ui.kpiSolar.textContent = solar.toFixed(1)
-      ui.kpiSolarKwh.textContent = state.solarKwhToday.toFixed(1)
-      ui.kpiLoad.textContent = load.toFixed(1)
-      ui.kpiLoadKwh.textContent = state.loadKwhToday.toFixed(1)
-      ui.kpiGrid.textContent = grid.toFixed(1)
-      ui.kpiSelf.textContent = String(round0(selfPct))
-
-      ui.svgSolarKw.textContent = solar.toFixed(1)
-      ui.svgGridKw.textContent = grid.toFixed(1)
-      ui.svgLoadKw.textContent = load.toFixed(1)
-      ui.svgSelfPct.textContent = String(round0(selfPct))
-
-      const invPct = round0(clamp((load / cfg.loadMax) * 100, 0, 100))
-      ui.svgInvPct.textContent = String(invPct)
-      ui.svgInvBar.setAttribute("width", String(2.56 * invPct))
-      ui.svgBatPct.textContent = String(soc)
-      ui.svgBatBar.setAttribute("width", String(1.56 * soc))
-
-      ui.mSolarToLoad.textContent = state.solarToLoadKw.toFixed(1)
-      ui.mGridToLoad.textContent = state.gridToLoadKw.toFixed(1)
-      ui.mSolarToBat.textContent = state.solarToBatKw.toFixed(1)
-      ui.mBatToLoad.textContent = state.batToLoadKw.toFixed(1)
-
-      ui.mBatSoc.textContent = String(soc)
-      ui.mBatKw.textContent = Math.abs(batKw).toFixed(1)
-
-      ui.batBar.style.width = `${soc}%`
-      ui.batBar.parentElement.setAttribute("aria-valuenow", String(soc))
-
-      ui.mSelfPct.textContent = String(round0(selfPct))
-      ui.mGridPct.textContent = String(round0(gridPct))
-      ui.selfBar.style.width = `${selfPct}%`
-      ui.selfBar.parentElement.setAttribute("aria-valuenow", String(round0(selfPct)))
-
-      const balance = (state.solarToLoadKw + state.gridToLoadKw + state.batToLoadKw) - load
-      const balanceAbs = Math.abs(balance)
-      if(balanceAbs <= 0.8){
-        setChip(ui.chipBalance, "Balance OK", "ok")
-      }else if(balanceAbs <= 2.5){
-        setChip(ui.chipBalance, "Balance Ajustando", "warn")
-      }else{
-        setChip(ui.chipBalance, "Balance Inestable", "bad")
-      }
-
-      if(soc <= cfg.socMin + 5) setChip(ui.chipBat, "SOC Bajo", "warn")
-      else if(soc >= cfg.socMax - 5) setChip(ui.chipBat, "SOC Alto", "blue")
-      else setChip(ui.chipBat, "SOC Normal", "ok")
-
-      setChip(ui.chipSelf, `${round0(selfPct)}%`, selfPct >= 80 ? "ok" : selfPct >= 50 ? "warn" : "bad")
-
-      ui.lastUpdate.textContent = state.useLive
-        ? (state.lastUpdatedLabel || "Última actualización: —")
-        : (state.lastUpdatedLabel ? `Última actualización: ${state.lastUpdatedLabel}` : "Última actualización: —")
-
-      const solarOn = state.solarKw > 1.2
-      const gridOn = state.gridKw > 0.8
-      const toLoadOn = state.loadKw > 1.2
-      const toBatOn = state.solarToBatKw > 0.8
-      const fromBatOn = state.batToLoadKw > 0.8
-
-      setFlowVis(ui.flowSolar, solarOn)
-      setFlowVis(ui.flowGrid, gridOn)
-      setFlowVis(ui.flowToLoad, toLoadOn)
-      setFlowVis(ui.flowToBat, toBatOn)
-      setFlowVis(ui.flowFromBat, fromBatOn)
-
-      ui.liveDot.style.background = state.useLive ? "rgba(96,165,250,.95)" : "rgba(45,212,191,.95)"
-      ui.liveDot.style.boxShadow = state.useLive ? "0 0 0 3px rgba(96,165,250,.18)" : "0 0 0 3px rgba(45,212,191,.18)"
-      ui.modeLabel.textContent = `Modo: ${state.useLive ? "Datos reales" : "Simulación"}`
-      setChip(ui.chipMode, state.useLive ? "Datos reales" : "Simulación", state.useLive ? "blue" : "ok")
-
-      ui.statusLine.textContent = state.useLive
-        ? "Datos reales activos · Animación derivada"
-        : "Simulación activa · Flujo en tiempo real"
-
-      const mm = Math.floor(state.simSec / 60)
-      const ss = state.simSec % 60
-      ui.simClock.textContent = `${pad2(mm)}:${pad2(ss)}`
-
-      ui.footLine.textContent = `Balance: Solar ${solar.toFixed(1)} kW · Batería ${batKw.toFixed(1)} kW · Red ${grid.toFixed(1)} kW → Consumo ${load.toFixed(1)} kW`
-    }
-
-    function reset(){
-      state.simSec = 0
-      state.solarKwhToday = 0
-      state.loadKwhToday = 0
-      state.batSoc = 62
-      state.lastUpdatedLabel = ""
-      state.lastTs = 0
-    }
-
-    function setProfile(p){
-      state.profile = p
-      const name = p === "picos" ? "Picos" : p === "noche" ? "Noche" : p === "estable" ? "Estable" : "Almacén"
-      setChip(ui.chipProfile, name, p === "noche" ? "blue" : p === "picos" ? "warn" : "ok")
-    }
-
-    async function tick(){
-      state.simSec += 1
-
-      if(state.useLive){
-        const r = await tryFetchLive()
-        if(!r.ok){
-          ui.lastUpdate.textContent = "Error cargando datos.json"
-          setChip(ui.chipMode, "Error datos", "bad")
+    ```html
+<script>
+        let data = {
+            total: {
+                potencia: 48.498,
+                energia_hoy: 89.18,
+                energia_total: 87.94
+            },
+            sebadal: {
+                potencia: "48.498",
+                ultima_produccion_valor: 48.498,
+                ultima_produccion_hora: "2026-01-19 14:30",
+                uso_total: 48.498,
+                produccion_total: 89.18,
+                autoconsumo: 89.18,
+                compra_red: 0.0
+            },
+            actualizado: new Date().toLocaleString('es-ES')
         }
-      }else{
-        stepSim(1)
-      }
 
-      render()
-    }
-
-    function bind(){
-      ui.chkLive.addEventListener("change", async (e) => {
-        state.useLive = !!e.target.checked
-        if(state.useLive){
-          const r = await tryFetchLive()
-          if(!r.ok){
-            state.useLive = false
-            ui.chkLive.checked = false
-            ui.lastUpdate.textContent = "No se pudo leer datos.json"
-            setChip(ui.chipMode, "Simulación", "ok")
-          }
-        }else{
-          reset()
+        async function loadData() {
+            try {
+                const response = await fetch('datos.json', { cache: 'no-store' })
+                if (response.ok) {
+                    data = await response.json()
+                    updateUI()
+                }
+            } catch (error) {
+                simulateData()
+            }
         }
-        render()
-      })
 
-      ui.btnReset.addEventListener("click", () => {
-        reset()
-        render()
-      })
+        function simulateData() {
+            const variance = (Math.random() - 0.5) * 5
+            const newPower = Math.max(0, parseFloat(data.sebadal.potencia) + variance)
 
-      document.querySelectorAll("[data-profile]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          setProfile(btn.getAttribute("data-profile"))
-        })
-      })
+            data.total.potencia = newPower
+            data.sebadal.potencia = newPower.toFixed(3)
+            data.sebadal.ultima_produccion_valor = newPower
+            data.sebadal.uso_total = newPower
+            data.sebadal.compra_red = Math.max(0, (Math.random() - 0.7) * 10)
+            data.actualizado = new Date().toLocaleString('es-ES')
 
-      window.addEventListener("resize", updateRotation)
-    }
+            updateUI()
+        }
 
-    ui.mInterval.textContent = String((cfg.tickMs/1000).toFixed(1))
-    ui.mFetch.textContent = String(round0(cfg.fetchMs/1000))
+        function updateUI() {
+            const energiaHoyKwh = Number(data?.total?.energia_hoy ?? 0)
+            const energiaTotalKwh = Number(data?.total?.energia_total ?? 0)
 
-    updateRotation()
-    bind()
-    setProfile("almacen")
-    reset()
-    stepSim(1)
-    render()
-    setInterval(tick, cfg.tickMs)
-  </script>
+            document.getElementById('energia-hoy').textContent = energiaHoyKwh.toFixed(2)
+            document.getElementById('energia-total').textContent = (energiaTotalKwh / 1000).toFixed(2)
+            document.getElementById('timestamp').textContent = String(data?.actualizado ?? '--')
+
+            const solarPower = Number(parseFloat(data?.sebadal?.potencia ?? 0) || 0)
+            const loadPower = Number(data?.sebadal?.uso_total ?? 0)
+            const gridPower = Number(data?.sebadal?.compra_red ?? 0)
+
+            document.getElementById('solar-power').textContent = solarPower.toFixed(3)
+            document.getElementById('load-power').textContent = loadPower.toFixed(3)
+            document.getElementById('battery-power').textContent = '0.000'
+            document.getElementById('grid-power').textContent = gridPower.toFixed(3)
+
+            drawFlowLines({ solarPower, loadPower, gridPower })
+        }
+
+        function drawFlowLines({ solarPower, loadPower, gridPower }) {
+            const svg = document.getElementById('flowSvg')
+            if (!svg) return
+
+            svg.innerHTML = ''
+
+            const addPath = (d, active) => {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+                line.setAttribute('d', d)
+                line.setAttribute('class', active ? 'flow-line' : '')
+                line.setAttribute('stroke', active ? '#2563eb' : '#9ca3af')
+                line.setAttribute('stroke-width', '3')
+                line.setAttribute('fill', 'none')
+                if (active) line.setAttribute('stroke-dasharray', '10')
+                svg.appendChild(line)
+                return line
+            }
+
+            const addArrow = (points, active) => {
+                const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
+                arrow.setAttribute('points', points)
+                arrow.setAttribute('fill', active ? '#2563eb' : '#9ca3af')
+                svg.appendChild(arrow)
+            }
+
+            const hasSolarToLoad = solarPower > 0
+            const hasGridToLoad = gridPower > 0
+
+            const hasExportToGrid = !hasGridToLoad && solarPower > loadPower
+
+            const dSolarToLoad = 'M 650 80 Q 500 200 400 400'
+            addPath(dSolarToLoad, hasSolarToLoad)
+            addArrow('395,395 405,400 395,405', hasSolarToLoad)
+
+            const dGridToLoad = 'M 210 85 Q 320 220 400 400'
+            addPath(dGridToLoad, hasGridToLoad)
+            addArrow('395,395 405,400 395,405', hasGridToLoad)
+
+            const dBatteryToLoad = 'M 210 265 Q 290 340 400 400'
+            addPath(dBatteryToLoad, false)
+            addArrow('395,395 405,400 395,405', false)
+
+            const dSolarToGrid = 'M 635 105 Q 430 40 235 105'
+            addPath(dSolarToGrid, hasExportToGrid)
+            addArrow('240,100 230,105 240,110', hasExportToGrid)
+        }
+
+        updateUI()
+        loadData()
+
+        setInterval(loadData, 3000)
+        setInterval(simulateData, 3000)
+</script>
+```
+
 </body>
 </html>
-```
