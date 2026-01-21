@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-datos.json
+
+# NO ignores datos.json - necesitas subirlo para GitHub Pages

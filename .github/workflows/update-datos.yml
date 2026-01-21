@@ -1,0 +1,48 @@
+name: Update FusionSolar Data
+
+on:
+  schedule:
+    - cron: '* * * * *'  # Cada 1 minuto
+  workflow_dispatch:  # Botón manual
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Update datos.json
+        env:
+          FUSION_USER: ${{ secrets.FUSION_USER }}
+          FUSION_PASS: ${{ secrets.FUSION_PASS }}
+          FUSION_SUBDOMAIN: ${{ secrets.FUSION_SUBDOMAIN }}
+          PLANT_INDEX: 0
+          OUT_FILE: datos.json
+        run: python src/update_datos_simple.py
+      
+      - name: Commit and push
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add datos.json
+          
+          if git diff --staged --quiet; then
+            echo "✓ Sin cambios"
+          else
+            git commit -m "📊 Update $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            git push
+          fi
