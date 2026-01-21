@@ -3,5 +3,3 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-
-# NO ignores datos.json - necesitas subirlo para GitHub Pages
