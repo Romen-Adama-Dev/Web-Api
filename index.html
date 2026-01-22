@@ -60,23 +60,10 @@
         }
 
         .header-content {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: minmax(234px, 300px) 1fr minmax(200px, 250px);
             align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .header-title h1 {
-            font-size: 32px;
-            font-weight: bold;
-            color: #1e40af;
-            margin-bottom: 8px;
-        }
-
-        .header-title p {
-            color: #6b7280;
-            font-size: 14px;
+            gap: 16px;
         }
 
         .live-indicator {
@@ -87,7 +74,7 @@
             padding: 8px 16px;
             border-radius: 9999px;
             font-size: 14px;
-            color: #059669;
+            color: #047857;
             font-weight: 500;
         }
 
@@ -151,17 +138,18 @@
         }
 
         .stat-icon {
-            width: 32px;
-            height: 32px;
-            margin-bottom: 16px;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 0;
             opacity: 0.8;
+            flex-shrink: 0;
         }
 
         .stat-value {
             display: flex;
             align-items: baseline;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 0;
         }
 
         .stat-value .number {
@@ -174,6 +162,13 @@
             font-size: 16px;
             font-weight: 500;
             opacity: 0.7;
+        }
+
+        .stat-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
         }
 
         .stat-label {
@@ -344,162 +339,420 @@
             vertical-align: middle;
         }
 
-        ```css
-.alarms-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+        .alarms-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .alarm-card {
+            border-radius: 8px;
+            padding: 16px;
+            border: 2px solid;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .alarm-card.red {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #991b1b;
+        }
+
+        .alarm-card.orange {
+            background: #fed7aa;
+            border-color: #f97316;
+            color: #9a3412;
+        }
+
+        .alarm-card.yellow {
+            background: #fef3c7;
+            border-color: #eab308;
+            color: #854d0e;
+        }
+
+        .alarm-card.blue {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        .alarm-type {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .alarm-count {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .env-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .env-card {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+        }
+
+        .env-icon {
+            width: 32px;
+            height: 32px;
+            color: #059669;
+            flex-shrink: 0;
+        }
+
+        .env-value {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .env-value .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .env-value .unit {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .env-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .stack-gap {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .header-logo {
+            width: 80%;
+            height: 100%;
+            max-width: 80%;
+            object-fit: cover;
+            object-position: left center;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.08));
+        }
+
+        .env-note {
+            margin-top: 16px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #6b7280;
+            background: #f9fafb;
+            border-left: 4px solid #10b981;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .header-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+            align-items: flex-start;
+            max-width: 720px;
+        }
+
+        .plant-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: 0.2px;
+            line-height: 1.1;
+        }
+
+        .plant-desc {
+            font-size: 18px;
+            font-weight: 650;
+            color: #6b7280;
+            letter-spacing: 0.1px;
+            line-height: 1.2;
+        }
+
+        .stat-hint {
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.35;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            justify-self: end;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            min-width: 200px;
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 36px;
+            background: #e5e7eb;
+        }
+
+        .header-live {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .header-weather {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            min-width: 190px;
+        }
+
+        .weather-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .weather-icon {
+            width: 18px;
+            height: 18px;
+            opacity: 0.9;
+            color: #111827;
+        }
+
+        .weather-date {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111827;
+            letter-spacing: 0.2px;
+        }
+
+        .weather-desc {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .weather-temp {
+            font-size: 12px;
+            font-weight: 800;
+            color: #111827;
+            margin-left: auto;
+        }
+
+        /* CSS (aplica estos cambios en tu <style>) */
+
+.header-content {
+  display: grid;
+  grid-template-columns: minmax(170px, 230px) 1fr minmax(190px, 240px);
+  align-items: center;
+  gap: 16px;
 }
 
-.alarm-card {
-    border-radius: 8px;
-    padding: 16px;
-    border: 2px solid;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+.header-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 160px;
+  height: 150px;
+  overflow: hidden;
 }
 
-.alarm-card.red {
-    background: #fee2e2;
-    border-color: #dc2626;
-    color: #991b1b;
+.header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  align-items: flex-start;
+  max-width: 980px;
 }
 
-.alarm-card.orange {
-    background: #fed7aa;
-    border-color: #f97316;
-    color: #9a3412;
+.plant-name {
+  font-size: 28px;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: 0.2px;
+  line-height: 1.05;
 }
 
-.alarm-card.yellow {
-    background: #fef3c7;
-    border-color: #eab308;
-    color: #854d0e;
+.plant-subname {
+  font-size: 26px;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: 0.2px;
+  line-height: 1.05;
 }
 
-.alarm-card.blue {
-    background: #dbeafe;
-    border-color: #3b82f6;
-    color: #1e40af;
+.plant-desc {
+  font-size: 20px;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 0.1px;
+  line-height: 1.15;
 }
 
-.alarm-type {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
+        @media (max-width: 768px) {
+            .header-content {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
 
-.alarm-count {
-    font-size: 24px;
-    font-weight: bold;
-}
+            .header-left {
+                justify-content: left;
+            }
 
-.env-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-}
+            .header-right {
+                justify-self: left;
+                align-items: left;
+            }
 
-.env-card {
-    display: flex;
-    gap: 16px;
-    padding: 16px;
-    border-radius: 8px;
-    background: #ecfdf5;
-    border: 1px solid #6ee7b7;
-}
+            .header-logo {
+                height: 90%;
+                max-width: 250px;
+            }
+        }
 
-.env-icon {
-    width: 32px;
-    height: 32px;
-    color: #059669;
-    flex-shrink: 0;
-}
-
-.env-value {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 4px;
-}
-
-.env-value .number {
-    font-size: 24px;
-    font-weight: bold;
-    color: #111827;
-}
-
-.env-value .unit {
-    font-size: 14px;
-    font-weight: 500;
-    color: #6b7280;
-}
-
-.env-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-}
-
-.stack-gap {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-```
-
+        /* Removed duplicate @media (max-width: 768px) .header-logo blocks */
     </style>
 </head>
 <body>
     <div class="rotated-stage">
         <div class="rotated-content">
             <div class="container">
+
                 <div class="header">
                     <div class="header-content">
-                        <div class="header-title">
-                            <h1>DIELCA</h1>
+                        <div class="header-left">
+                            <img src="LOGOS COMERCIALES-02.png" alt="DIELCA" class="header-logo">
                         </div>
-                        <div>
-                            <div class="live-indicator">
-                                <span class="live-dot"></span>
-                                Datos en vivo
+
+                        <div class="header-center">
+                        <div class="header-meta">
+                            <div class="plant-name">EL SEBADAL</div>
+                            <div class="plant-desc">Planta Eléctrica</div>
+                            <div class="plant-desc">Fotovoltaica</div>
+                        </div>
+                        </div>
+
+                        <div class="header-right">
+                            <div class="header-live">
+                                <div class="live-indicator">
+                                    <span class="live-dot"></span>
+                                    Datos en vivo
+                                </div>
+                                <div class="timestamp" id="timestamp">--</div>
                             </div>
-                            <div class="timestamp" id="timestamp">--</div>
+                            <div class="header-status">
+                                <div class="header-weather" id="header-weather" aria-live="polite">
+                                    <div class="weather-row">
+                                        <svg class="weather-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        <span class="weather-date" id="weather-date">--</span>
+                                    </div>
+                                    <div class="weather-row">
+                                        <svg class="weather-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                                        </svg>
+                                        <span class="weather-desc" id="weather-desc">--</span>
+                                        <span class="weather-temp" id="weather-temp">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
 
                 <div class="stats-grid">
                     <div class="stat-card yellow">
-                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-                        </svg>
-                        <div class="stat-value">
-                            <span class="number" id="energia-hoy">--</span>
-                            <span class="unit">kWh</span>
+                        <div class="stat-main">
+                            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                            <div class="stat-value">
+                                <span class="number" id="energia-hoy">--</span>
+                                <span class="unit">kWh</span>
+                            </div>
                         </div>
                         <div class="stat-label">Rendimiento hoy</div>
+                        <div class="stat-hint">Energía generada por la planta durante el día de hoy</div>
                     </div>
 
                     <div class="stat-card blue">
-                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        <div class="stat-value">
-                            <span class="number" id="grid-import-today">--</span>
-                            <span class="unit">kWh</span>
+                        <div class="stat-main">
+                            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <div class="stat-value">
+                                <span class="number" id="grid-import-today">--</span>
+                                <span class="unit">kWh</span>
+                            </div>
                         </div>
                         <div class="stat-label">Suministro desde la red de hoy</div>
+                        <div class="stat-hint">Energía comprada a la red eléctrica cuando la FV no cubre la demanda</div>
                     </div>
 
                     <div class="stat-card green">
-                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                        </svg>
-                        <div class="stat-value">
-                            <span class="number" id="energia-total">--</span>
-                            <span class="unit">MWh</span>
+                        <div class="stat-main">
+                            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                            <div class="stat-value">
+                                <span class="number" id="energia-total">--</span>
+                                <span class="unit">MWh</span>
+                            </div>
                         </div>
                         <div class="stat-label">Rendimiento total</div>
+                        <div class="stat-hint">Energía acumulada generada por la planta desde su puesta en marcha</div>
                     </div>
                 </div>
 
@@ -580,283 +833,379 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="stack-gap" style="margin-top: 24px;">
-                <div class="card">
-                    <h3 class="card-title">
-                    <svg class="icon" style="width: 20px; height: 20px; margin-right: 8px; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                    </svg>
-                    Beneficios Medioambientales
-                    </h3>
-                    <div class="env-grid">
-                    <div class="env-card">
-                        <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
-                        </svg>
-                        <div>
-                        <div class="env-value">
-                            <span class="number">35,18</span>
-                            <span class="unit">toneladas</span>
-                        </div>
-                        <div class="env-label">Ahorro estándar de carbón</div>
-                        </div>
-                    </div>
+                    <div class="card">
+                        <h3 class="card-title">
+                            <svg class="icon" style="width: 20px; height: 20px; margin-right: 8px; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                            </svg>
+                            Beneficios Medioambientales
+                        </h3>
 
-                    <div class="env-card">
-                        <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
-                        </svg>
-                        <div>
-                        <div class="env-value">
-                            <span class="number">41,77</span>
-                            <span class="unit">toneladas</span>
-                        </div>
-                        <div class="env-label">CO₂ evitado</div>
-                        </div>
-                    </div>
-
-                    <div class="env-card">
-                        <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                        </svg>
-                        <div>
-                        <div class="env-value">
-                            <span class="number">58</span>
-                            <span class="unit"></span>
-                        </div>
-                        <div class="env-label">Árboles equivalentes plantados</div>
-                        </div>
-                    </div>
-                    <div class="env-card">
-                        <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V6m0 10v2m8-6a8 8 0 11-16 0 8 8 0 0116 0z"/>
-                        </svg>
-                        <div>
-                            <div class="env-value">
-                            <span class="number">12.430</span>
-                            <span class="unit">€</span>
+                        <div class="env-grid">
+                            <div class="env-card">
+                                <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                                </svg>
+                                <div>
+                                    <div class="env-value">
+                                        <span class="number">35,18</span>
+                                        <span class="unit">toneladas</span>
+                                    </div>
+                                    <div class="env-label">Ahorro estándar de carbón</div>
+                                </div>
                             </div>
-                            <div class="env-label">Ahorro económico por impacto medioambiental</div>
+
+                            <div class="env-card">
+                                <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                                </svg>
+                                <div>
+                                    <div class="env-value">
+                                        <span class="number">41,77</span>
+                                        <span class="unit">toneladas</span>
+                                    </div>
+                                    <div class="env-label">CO₂ evitado</div>
+                                </div>
+                            </div>
+
+                            <div class="env-card">
+                                <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                </svg>
+                                <div>
+                                    <div class="env-value">
+                                        <span class="number">58</span>
+                                        <span class="unit"></span>
+                                    </div>
+                                    <div class="env-label">Árboles equivalentes plantados</div>
+                                </div>
+                            </div>
+
+                            <div class="env-card">
+                                <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V6m0 10v2m8-6a8 8 0 11-16 0 8 8 0 0116 0z"/>
+                                </svg>
+                                <div>
+                                    <div class="env-value">
+                                        <span class="number">12.430</span>
+                                        <span class="unit">€</span>
+                                    </div>
+                                    <div class="env-label">Ahorro económico por impacto medioambiental</div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="env-note">
+                            Los beneficios medioambientales mostrados se calculan a partir de la energía
+                            fotovoltaica generada por la planta, utilizando factores de conversión estándar
+                            reconocidos en el sector energético.
                         </div>
-
-                    
-
+                    </div>
                 </div>
-                </div>
-
 
                 <div class="footer">
                     <p class="footer-brand">
                         <strong>DIELCA</strong> - Distribuidora Eléctrica Canaria, S.A.
                     </p>
-                    <p class="footer-tagline">40 años de experiencia en Canarias</p>
+                    <p class="footer-tagline">44 años de experiencia en Canarias</p>
                 </div>
             </div>
         </div>
     </div>
 
-<script>
-  let data = {
-    total: {
-      potencia: 15.881,
-      energia_hoy: 157.87,
-      energia_total: 88007.02
-    },
-    sebadal: {
-      potencia: '15.88',
-      ultima_produccion_valor: 15.806,
-      ultima_produccion_hora: '2026-01-19 13:50',
-      uso_total: 0.0,
-      produccion_total: 157.87,
-      autoconsumo: 0.0,
-      compra_red: 0.0
-    },
-    actualizado: new Date().toLocaleString('es-ES')
-  }
+    <script>
+      ;(async () => {
+        let data = {
+          total: {
+            potencia: 15.881,
+            energia_hoy: 157.87,
+            energia_total: 88007.02
+          },
+          sebadal: {
+            potencia: '15.88',
+            ultima_produccion_valor: 15.806,
+            ultima_produccion_hora: '2026-01-19 13:50',
+            uso_total: 0,
+            produccion_total: 157.87,
+            autoconsumo: 0,
+            compra_red: 0
+          },
+          actualizado: new Date().toLocaleString('es-ES')
+        }
 
-  const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
-  const lerp = (a, b, t) => a + (b - a) * t
+        const weatherCfg = {
+          enabled: true,
+          lat: 28.128,
+          lon: -15.436,
+          tz: 'Atlantic/Canary'
+        }
 
-  const state = {
-    t: 0,
-    solar: data.total.potencia,
-    load: 0,
-    grid: 0
-  }
+        const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
+        const lerp = (a, b, t) => a + (b - a) * t
 
-  const cfg = {
-    solarMax: 50,
-    loadMax: 45,
-    baseLoadMin: 2,
-    baseLoadMax: 14,
-    intervalMs: 3000
-  }
+        const state = {
+          t: 0,
+          solar: data.total.potencia,
+          load: 0,
+          grid: 0
+        }
 
-  const pad2 = n => String(n).padStart(2, '0')
-  const formatStamp = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`
-  const nowHourFrac = d => d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600
+        const cfg = {
+          solarMax: 50,
+          loadMax: 45,
+          baseLoadMin: 2,
+          baseLoadMax: 14,
+          intervalMs: 3000
+        }
 
-  const solarProfile = (hour) => {
-    const start = 7.0
-    const end = 18.5
-    if (hour < start || hour > end) return 0
+        const pad2 = n => String(n).padStart(2, '0')
+        const formatStamp = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`
+        const nowHourFrac = d => d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600
 
-    const x = (hour - start) / (end - start)
-    const peak = Math.sin(Math.PI * x)
-    const cloud = 0.85 + 0.15 * Math.sin(state.t / 9) + 0.08 * Math.sin(state.t / 3.7)
-    return clamp(peak * cloud, 0, 1)
-  }
+        const solarProfile = (hour) => {
+          const start = 7
+          const end = 18.5
+          if (hour < start || hour > end) return 0
 
-  const loadProfile = (hour) => {
-    const base = lerp(cfg.baseLoadMin, cfg.baseLoadMax, 0.6 + 0.4 * Math.sin((state.t / 12) + 1.2))
-    const business = hour >= 8 && hour <= 20 ? 1 : 0.65
-    const peak1 = Math.max(0, 1 - Math.abs(hour - 12.5) / 3.2)
-    const peak2 = Math.max(0, 1 - Math.abs(hour - 18.0) / 2.6)
-    const spikes = 0.25 * peak1 + 0.35 * peak2
-    return clamp(base * business * (1 + spikes), 0, cfg.loadMax)
-  }
+          const x = (hour - start) / (end - start)
+          const peak = Math.sin(Math.PI * x)
+          const cloud = 0.85 + 0.15 * Math.sin(state.t / 9) + 0.08 * Math.sin(state.t / 3.7)
+          return clamp(peak * cloud, 0, 1)
+        }
 
-  function simulateData() {
-    state.t += 1
+        const loadProfile = (hour) => {
+          const base = lerp(cfg.baseLoadMin, cfg.baseLoadMax, 0.6 + 0.4 * Math.sin((state.t / 12) + 1.2))
+          const business = hour >= 8 && hour <= 20 ? 1 : 0.65
+          const peak1 = Math.max(0, 1 - Math.abs(hour - 12.5) / 3.2)
+          const peak2 = Math.max(0, 1 - Math.abs(hour - 18) / 2.6)
+          const spikes = 0.25 * peak1 + 0.35 * peak2
+          return clamp(base * business * (1 + spikes), 0, cfg.loadMax)
+        }
 
-    const d = new Date()
-    const hour = nowHourFrac(d)
+        function formatHeaderDate(d) {
+          const days = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+          const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+          return `${days[d.getDay()]} ${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`
+        }
 
-    const solarTarget = cfg.solarMax * solarProfile(hour)
-    const loadTarget = loadProfile(hour)
+        async function loadWeatherToday() {
+          if (!weatherCfg.enabled) return
 
-    state.solar = lerp(state.solar, solarTarget, 0.22)
-    state.load = lerp(state.load, loadTarget, 0.28)
+          const dateEl = document.getElementById('weather-date')
+          const descEl = document.getElementById('weather-desc')
+          const tempEl = document.getElementById('weather-temp')
 
-    const netFromSolar = Math.min(state.solar, state.load)
+          const now = new Date()
+          if (dateEl) dateEl.textContent = formatHeaderDate(now)
 
-    const noiseSolar = (Math.random() - 0.5) * Math.max(0.12, state.solar * 0.02)
-    const noiseLoad = (Math.random() - 0.5) * Math.max(0.1, state.load * 0.03)
+          try {
+            const url =
+              `https://api.open-meteo.com/v1/forecast` +
+              `?latitude=${encodeURIComponent(weatherCfg.lat)}` +
+              `&longitude=${encodeURIComponent(weatherCfg.lon)}` +
+              `&daily=weathercode,temperature_2m_max,temperature_2m_min` +
+              `&current_weather=true` +
+              `&timezone=${encodeURIComponent(weatherCfg.tz)}`
 
-    state.solar = clamp(state.solar + noiseSolar, 0, cfg.solarMax)
-    state.load = clamp(state.load + noiseLoad, 0, cfg.loadMax)
+            const res = await fetch(url, { cache: 'no-store' })
+            if (!res.ok) throw new Error('weather_fetch_failed')
+            const w = await res.json()
 
-    const gridTarget = Math.max(0, state.load - state.solar)
-    state.grid = lerp(state.grid, gridTarget, 0.35)
+            const code = w?.current_weather?.weathercode
+            const t = w?.current_weather?.temperature
+            const tMax = w?.daily?.temperature_2m_max?.[0]
+            const tMin = w?.daily?.temperature_2m_min?.[0]
 
-    data.total.potencia = state.solar
+            const map = {
+              0: 'Despejado',
+              1: 'Principalmente despejado',
+              2: 'Parcialmente nublado',
+              3: 'Nublado',
+              45: 'Niebla',
+              48: 'Niebla con escarcha',
+              51: 'Llovizna ligera',
+              53: 'Llovizna',
+              55: 'Llovizna intensa',
+              61: 'Lluvia ligera',
+              63: 'Lluvia',
+              65: 'Lluvia intensa',
+              71: 'Nieve ligera',
+              73: 'Nieve',
+              75: 'Nieve intensa',
+              80: 'Chubascos ligeros',
+              81: 'Chubascos',
+              82: 'Chubascos intensos',
+              95: 'Tormenta',
+              96: 'Tormenta con granizo',
+              99: 'Tormenta fuerte con granizo'
+            }
 
-    data.sebadal.potencia = state.solar.toFixed(2)
-    data.sebadal.ultima_produccion_valor = Number(state.solar.toFixed(3))
-    data.sebadal.ultima_produccion_hora = formatStamp(d)
+            if (descEl) descEl.textContent = map[Number(code)] ?? 'Tiempo no disponible'
 
-    data.sebadal.uso_total = Number(state.load.toFixed(3))
-    data.sebadal.compra_red = Number(state.grid.toFixed(3))
+            if (typeof t === 'number') {
+              tempEl.textContent = `${t.toFixed(0)} °C`
+            } else if (typeof tMax === 'number' && typeof tMin === 'number') {
+              tempEl.textContent = `${tMin.toFixed(0)}–${tMax.toFixed(0)} °C`
+            } else {
+              tempEl.textContent = '--'
+            }
+          } catch (e) {
+            if (descEl) descEl.textContent = 'Tiempo no disponible'
+            if (tempEl) tempEl.textContent = '--'
+          }
+        }
 
-    data.sebadal.autoconsumo = Number(netFromSolar.toFixed(3))
+        function simulateData() {
+          state.t += 1
 
-    const incKwh = (state.solar * (cfg.intervalMs / 3600000))
-    data.total.energia_hoy = Number((data.total.energia_hoy + incKwh).toFixed(3))
-    data.total.energia_total = Number((data.total.energia_total + incKwh).toFixed(3))
+          const d = new Date()
+          const hour = nowHourFrac(d)
 
-    data.sebadal.produccion_total = Number(data.total.energia_hoy.toFixed(3))
+          const solarTarget = cfg.solarMax * solarProfile(hour)
+          const loadTarget = loadProfile(hour)
 
-    data.actualizado = formatStamp(d)
+          state.solar = lerp(state.solar, solarTarget, 0.22)
+          state.load = lerp(state.load, loadTarget, 0.28)
 
-    updateUI()
-  }
+          const netFromSolar = Math.min(state.solar, state.load)
 
-  async function loadData() {
-    try {
-      const response = await fetch('datos.json', { cache: 'no-store' })
-      if (response.ok) {
-        data = await response.json()
+          const noiseSolar = (Math.random() - 0.5) * Math.max(0.12, state.solar * 0.02)
+          const noiseLoad = (Math.random() - 0.5) * Math.max(0.1, state.load * 0.03)
 
-        state.solar = Number(parseFloat(data?.sebadal?.potencia ?? data?.total?.potencia ?? 0) || 0)
-        state.load = Number(data?.sebadal?.uso_total ?? 0)
-        state.grid = Number(data?.sebadal?.compra_red ?? 0)
+          state.solar = clamp(state.solar + noiseSolar, 0, cfg.solarMax)
+          state.load = clamp(state.load + noiseLoad, 0, cfg.loadMax)
+
+          const gridTarget = Math.max(0, state.load - state.solar)
+          state.grid = lerp(state.grid, gridTarget, 0.35)
+
+          data.total.potencia = state.solar
+
+          data.sebadal.potencia = state.solar.toFixed(2)
+          data.sebadal.ultima_produccion_valor = Number(state.solar.toFixed(3))
+          data.sebadal.ultima_produccion_hora = formatStamp(d)
+
+          data.sebadal.uso_total = Number(state.load.toFixed(3))
+          data.sebadal.compra_red = Number(state.grid.toFixed(3))
+          data.sebadal.autoconsumo = Number(netFromSolar.toFixed(3))
+
+          const incKwh = state.solar * (cfg.intervalMs / 3600000)
+          data.total.energia_hoy = Number((data.total.energia_hoy + incKwh).toFixed(3))
+          data.total.energia_total = Number((data.total.energia_total + incKwh).toFixed(3))
+          data.sebadal.produccion_total = Number(data.total.energia_hoy.toFixed(3))
+
+          data.actualizado = formatStamp(d)
+
+          updateUI()
+        }
+
+        async function loadData() {
+          try {
+            const response = await fetch('datos.json', { cache: 'no-store' })
+            if (response.ok) {
+              data = await response.json()
+
+              state.solar = Number(Number.parseFloat(data?.sebadal?.potencia ?? data?.total?.potencia ?? 0) || 0)
+              state.load = Number(data?.sebadal?.uso_total ?? 0)
+              state.grid = Number(data?.sebadal?.compra_red ?? 0)
+
+              updateUI()
+              return
+            }
+          } catch (e) {}
+
+          simulateData()
+        }
+
+        function updateUI() {
+          const energiaHoyKwh = Number(data?.total?.energia_hoy ?? 0)
+          const energiaTotalKwh = Number(data?.total?.energia_total ?? 0)
+
+          const energiaHoyEl = document.getElementById('energia-hoy')
+          const energiaTotalEl = document.getElementById('energia-total')
+          const timestampEl = document.getElementById('timestamp')
+
+          if (energiaHoyEl) energiaHoyEl.textContent = energiaHoyKwh.toFixed(2)
+          if (energiaTotalEl) energiaTotalEl.textContent = (energiaTotalKwh / 1000).toFixed(2)
+          if (timestampEl) timestampEl.textContent = String(data?.actualizado ?? '--')
+
+          const solarPower = Number(Number.parseFloat(data?.sebadal?.potencia ?? 0) || 0)
+          const loadPower = Number(data?.sebadal?.uso_total ?? 0)
+          const gridPower = Number(data?.sebadal?.compra_red ?? 0)
+
+          const solarEl = document.getElementById('solar-power')
+          const loadEl = document.getElementById('load-power')
+          const batteryEl = document.getElementById('battery-power')
+          const gridEl = document.getElementById('grid-power')
+
+          if (solarEl) solarEl.textContent = solarPower.toFixed(3)
+          if (loadEl) loadEl.textContent = loadPower.toFixed(3)
+          if (batteryEl) batteryEl.textContent = '0.000'
+          if (gridEl) gridEl.textContent = gridPower.toFixed(3)
+
+          const gridImportTodayEl = document.getElementById('grid-import-today')
+          if (gridImportTodayEl) {
+            const gridImportTodayKwh = Math.max(0, gridPower) * (cfg.intervalMs / 3600000)
+            const prev = Number(Number.parseFloat(String(gridImportTodayEl.textContent ?? '0').replace(',', '.')) || 0)
+            const next = prev + gridImportTodayKwh
+            gridImportTodayEl.textContent = next.toFixed(2).replace('.', ',')
+          }
+
+          drawFlowLines({ solarPower, loadPower, gridPower })
+        }
+
+        function drawFlowLines({ solarPower, loadPower, gridPower }) {
+          const svg = document.getElementById('flowSvg')
+          if (!svg) return
+
+          svg.innerHTML = ''
+
+          const addPath = (d, active) => {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+            line.setAttribute('d', d)
+            line.setAttribute('stroke', active ? '#2563eb' : '#9ca3af')
+            line.setAttribute('stroke-width', '3')
+            line.setAttribute('fill', 'none')
+            if (active) {
+              line.setAttribute('class', 'flow-line')
+              line.setAttribute('stroke-dasharray', '10')
+            }
+            svg.appendChild(line)
+          }
+
+          const addArrow = (points, active) => {
+            const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
+            arrow.setAttribute('points', points)
+            arrow.setAttribute('fill', active ? '#2563eb' : '#9ca3af')
+            svg.appendChild(arrow)
+          }
+
+          const hasSolarToLoad = solarPower > 0.05
+          const hasGridToLoad = gridPower > 0.05
+          const hasExportToGrid = !hasGridToLoad && solarPower > loadPower + 0.15
+
+          addPath('M 650 80 Q 500 200 400 400', hasSolarToLoad)
+          addArrow('395,395 405,400 395,405', hasSolarToLoad)
+
+          addPath('M 210 85 Q 320 220 400 400', hasGridToLoad)
+          addArrow('395,395 405,400 395,405', hasGridToLoad)
+
+          addPath('M 210 265 Q 290 340 400 400', false)
+          addArrow('395,395 405,400 395,405', false)
+
+          addPath('M 635 105 Q 430 40 235 105', hasExportToGrid)
+          addArrow('240,100 230,105 240,110', hasExportToGrid)
+        }
 
         updateUI()
-        return
-      }
-    } catch (e) {}
+        await loadData()
+        await loadWeatherToday()
 
-    simulateData()
-  }
-
-  function updateUI() {
-    const energiaHoyKwh = Number(data?.total?.energia_hoy ?? 0)
-    const energiaTotalKwh = Number(data?.total?.energia_total ?? 0)
-
-    document.getElementById('energia-hoy').textContent = energiaHoyKwh.toFixed(2)
-    document.getElementById('energia-total').textContent = (energiaTotalKwh / 1000).toFixed(2)
-    document.getElementById('timestamp').textContent = String(data?.actualizado ?? '--')
-
-    const solarPower = Number(parseFloat(data?.sebadal?.potencia ?? 0) || 0)
-    const loadPower = Number(data?.sebadal?.uso_total ?? 0)
-    const gridPower = Number(data?.sebadal?.compra_red ?? 0)
-
-    document.getElementById('solar-power').textContent = solarPower.toFixed(3)
-    document.getElementById('load-power').textContent = loadPower.toFixed(3)
-    document.getElementById('battery-power').textContent = '0.000'
-    document.getElementById('grid-power').textContent = gridPower.toFixed(3)
-
-    const gridImportTodayKwh = Math.max(0, gridPower) * (cfg.intervalMs / 3600000)
-    const prev = Number(parseFloat(document.getElementById('grid-import-today')?.textContent?.replace(',', '.') ?? 0) || 0)
-    const next = prev + gridImportTodayKwh
-    document.getElementById('grid-import-today').textContent = next.toFixed(2).replace('.', ',')
-
-    drawFlowLines({ solarPower, loadPower, gridPower })
-  }
-
-  function drawFlowLines({ solarPower, loadPower, gridPower }) {
-    const svg = document.getElementById('flowSvg')
-    if (!svg) return
-
-    svg.innerHTML = ''
-
-    const addPath = (d, active) => {
-      const line = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-      line.setAttribute('d', d)
-      line.setAttribute('class', active ? 'flow-line' : '')
-      line.setAttribute('stroke', active ? '#2563eb' : '#9ca3af')
-      line.setAttribute('stroke-width', '3')
-      line.setAttribute('fill', 'none')
-      if (active) line.setAttribute('stroke-dasharray', '10')
-      svg.appendChild(line)
-      return line
-    }
-
-    const addArrow = (points, active) => {
-      const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
-      arrow.setAttribute('points', points)
-      arrow.setAttribute('fill', active ? '#2563eb' : '#9ca3af')
-      svg.appendChild(arrow)
-    }
-
-    const hasSolarToLoad = solarPower > 0.05
-    const hasGridToLoad = gridPower > 0.05
-    const hasExportToGrid = !hasGridToLoad && solarPower > loadPower + 0.15
-
-    const dSolarToLoad = 'M 650 80 Q 500 200 400 400'
-    addPath(dSolarToLoad, hasSolarToLoad)
-    addArrow('395,395 405,400 395,405', hasSolarToLoad)
-
-    const dGridToLoad = 'M 210 85 Q 320 220 400 400'
-    addPath(dGridToLoad, hasGridToLoad)
-    addArrow('395,395 405,400 395,405', hasGridToLoad)
-
-    const dBatteryToLoad = 'M 210 265 Q 290 340 400 400'
-    addPath(dBatteryToLoad, false)
-    addArrow('395,395 405,400 395,405', false)
-
-    const dSolarToGrid = 'M 635 105 Q 430 40 235 105'
-    addPath(dSolarToGrid, hasExportToGrid)
-    addArrow('240,100 230,105 240,110', hasExportToGrid)
-  }
-
-  updateUI()
-  loadData()
-
-  setInterval(loadData, cfg.intervalMs)
-</script>
+        setInterval(loadData, cfg.intervalMs)
+        setInterval(loadWeatherToday, 30 * 60 * 1000)
+      })()
+    </script>
 
 </body>
 </html>
