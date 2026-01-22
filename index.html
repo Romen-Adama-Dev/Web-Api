@@ -31,7 +31,7 @@
             left: 0;
             width: 100vh;
             height: 100vw;
-            transform: rotate(90deg) translateY(-100%);
+            transform: rotate(-90deg) translateX(-100%);
             transform-origin: top left;
             overflow: hidden;
             background: #f9fafb;
@@ -182,19 +182,6 @@
             opacity: 0.8;
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .card {
             background: white;
             border-radius: 16px;
@@ -208,54 +195,6 @@
             font-weight: 600;
             color: #111827;
             margin-bottom: 20px;
-        }
-
-        .alarms-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .alarm-card {
-            border-radius: 8px;
-            padding: 16px;
-            border: 2px solid;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .alarm-card.red {
-            background: #fee2e2;
-            border-color: #dc2626;
-            color: #991b1b;
-        }
-
-        .alarm-card.orange {
-            background: #fed7aa;
-            border-color: #f97316;
-            color: #9a3412;
-        }
-
-        .alarm-card.yellow {
-            background: #fef3c7;
-            border-color: #eab308;
-            color: #854d0e;
-        }
-
-        .alarm-card.blue {
-            background: #dbeafe;
-            border-color: #3b82f6;
-            color: #1e40af;
-        }
-
-        .alarm-type {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .alarm-count {
-            font-size: 24px;
-            font-weight: bold;
         }
 
         .energy-flow {
@@ -379,53 +318,6 @@
             }
         }
 
-        .env-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 16px;
-        }
-
-        .env-card {
-            display: flex;
-            gap: 16px;
-            padding: 16px;
-            border-radius: 8px;
-            background: #ecfdf5;
-            border: 1px solid #6ee7b7;
-        }
-
-        .env-icon {
-            width: 32px;
-            height: 32px;
-            color: #059669;
-            flex-shrink: 0;
-        }
-
-        .env-value {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-
-        .env-value .number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #111827;
-        }
-
-        .env-value .unit {
-            font-size: 14px;
-            font-weight: 500;
-            color: #6b7280;
-        }
-
-        .env-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #374151;
-        }
-
         .footer {
             text-align: center;
             margin-top: 32px;
@@ -450,12 +342,6 @@
         .icon {
             display: inline-block;
             vertical-align: middle;
-        }
-
-        .stack-gap {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
         }
     </style>
 </head>
@@ -511,167 +397,81 @@
                         </div>
                         <div class="stat-label">Rendimiento total</div>
                     </div>
-
-                    <div class="stat-card red">
-                        <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                        </svg>
-                        <div class="stat-value">
-                            <span class="number">0,00</span>
-                            <span class="unit">€</span>
-                        </div>
-                        <div class="stat-label">Ingresos hoy</div>
-                    </div>
                 </div>
 
-                <div class="main-grid">
-                    <div class="stack-gap">
-                        <div class="card">
-                            <h3 class="card-title">Estado del Sistema</h3>
-                            <div class="alarms-grid">
-                                <div class="alarm-card red">
-                                    <div class="alarm-type">Críticas</div>
-                                    <div class="alarm-count">0</div>
-                                </div>
-                                <div class="alarm-card orange">
-                                    <div class="alarm-type">Mayor</div>
-                                    <div class="alarm-count">0</div>
-                                </div>
-                                <div class="alarm-card yellow">
-                                    <div class="alarm-type">Menores</div>
-                                    <div class="alarm-count">0</div>
-                                </div>
-                                <div class="alarm-card blue">
-                                    <div class="alarm-type">Aviso</div>
-                                    <div class="alarm-count">0</div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="card">
+                    <h3 class="card-title">
+                        <svg class="icon" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Flujo de Energía en Tiempo Real
+                    </h3>
+                    <div class="energy-flow">
+                        <svg class="flow-svg" id="flowSvg"></svg>
 
-                        <div class="card">
-                            <h3 class="card-title">
-                                <svg class="icon" style="width: 20px; height: 20px; margin-right: 8px; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        <div class="flow-node node-solar active" id="node-solar">
+                            <div class="flow-node-header">
+                                <svg class="flow-icon" style="color: #ca8a04;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
-                                Beneficios Medioambientales
-                            </h3>
-                            <div class="env-grid">
-                                <div class="env-card">
-                                    <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="env-value">
-                                            <span class="number">35,18</span>
-                                            <span class="unit">toneladas</span>
-                                        </div>
-                                        <div class="env-label">Ahorro estándar de carbón</div>
-                                    </div>
+                                <div>
+                                    <div class="flow-node-title">Paneles Solares</div>
                                 </div>
-
-                                <div class="env-card">
-                                    <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="env-value">
-                                            <span class="number">41,77</span>
-                                            <span class="unit">toneladas</span>
-                                        </div>
-                                        <div class="env-label">CO₂ evitado</div>
-                                    </div>
-                                </div>
-
-                                <div class="env-card">
-                                    <svg class="env-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="env-value">
-                                            <span class="number">58</span>
-                                            <span class="unit"></span>
-                                        </div>
-                                        <div class="env-label">Árboles equivalentes plantados</div>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="flow-node-label">Potencia de salida</div>
+                            <div class="flow-node-value">
+                                <span class="number" id="solar-power">0.000</span>
+                                <span class="unit">kW</span>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card">
-                        <h3 class="card-title">
-                            <svg class="icon" style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                            </svg>
-                            Flujo de Energía en Tiempo Real
-                        </h3>
-                        <div class="energy-flow">
-                            <svg class="flow-svg" id="flowSvg"></svg>
-
-                            <div class="flow-node node-solar active" id="node-solar">
-                                <div class="flow-node-header">
-                                    <svg class="flow-icon" style="color: #ca8a04;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="flow-node-title">Paneles Solares</div>
-                                    </div>
-                                </div>
-                                <div class="flow-node-label">Potencia de salida</div>
-                                <div class="flow-node-value">
-                                    <span class="number" id="solar-power">0.000</span>
-                                    <span class="unit">kW</span>
+                        <div class="flow-node node-battery" id="node-battery">
+                            <div class="flow-node-header">
+                                <svg class="flow-icon" style="color: #2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                                <div>
+                                    <div class="flow-node-title">Batería</div>
+                                    <div class="flow-node-status">Sin control</div>
                                 </div>
                             </div>
-
-                            <div class="flow-node node-battery" id="node-battery">
-                                <div class="flow-node-header">
-                                    <svg class="flow-icon" style="color: #2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                                    </svg>
-                                    <div>
-                                        <div class="flow-node-title">Batería</div>
-                                        <div class="flow-node-status">Sin control</div>
-                                    </div>
-                                </div>
-                                <div class="flow-node-label">Energía actual</div>
-                                <div class="flow-node-value">
-                                    <span class="number" id="battery-power">0.000</span>
-                                    <span class="unit">kW</span>
-                                </div>
-                                <div class="flow-node-label" style="margin-top: 8px;">SOC: <span id="battery-soc">6.0</span>%</div>
+                            <div class="flow-node-label">Energía actual</div>
+                            <div class="flow-node-value">
+                                <span class="number" id="battery-power">0.000</span>
+                                <span class="unit">kW</span>
                             </div>
+                            <div class="flow-node-label" style="margin-top: 8px;">SOC: <span id="battery-soc">6.0</span>%</div>
+                        </div>
 
-                            <div class="flow-node node-grid" id="node-grid">
-                                <div class="flow-node-header">
-                                    <svg class="flow-icon" style="color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="flow-node-title">Red Eléctrica</div>
-                                    </div>
-                                </div>
-                                <div class="flow-node-label">Energía actual</div>
-                                <div class="flow-node-value">
-                                    <span class="number" id="grid-power">0.000</span>
-                                    <span class="unit">kW</span>
+                        <div class="flow-node node-grid" id="node-grid">
+                            <div class="flow-node-header">
+                                <svg class="flow-icon" style="color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                <div>
+                                    <div class="flow-node-title">Red Eléctrica</div>
                                 </div>
                             </div>
+                            <div class="flow-node-label">Energía actual</div>
+                            <div class="flow-node-value">
+                                <span class="number" id="grid-power">0.000</span>
+                                <span class="unit">kW</span>
+                            </div>
+                        </div>
 
-                            <div class="flow-node node-load active" id="node-load">
-                                <div class="flow-node-header">
-                                    <svg class="flow-icon" style="color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                                    </svg>
-                                    <div>
-                                        <div class="flow-node-title">Edificio / Carga</div>
-                                    </div>
+                        <div class="flow-node node-load active" id="node-load">
+                            <div class="flow-node-header">
+                                <svg class="flow-icon" style="color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                </svg>
+                                <div>
+                                    <div class="flow-node-title">Edificio / Carga</div>
                                 </div>
-                                <div class="flow-node-label">Energía de consumo</div>
-                                <div class="flow-node-value">
-                                    <span class="number" id="load-power">0.000</span>
-                                    <span class="unit">kW</span>
-                                </div>
+                            </div>
+                            <div class="flow-node-label">Energía de consumo</div>
+                            <div class="flow-node-value">
+                                <span class="number" id="load-power">0.000</span>
+                                <span class="unit">kW</span>
                             </div>
                         </div>
                     </div>
