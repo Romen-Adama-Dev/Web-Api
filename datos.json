@@ -1,21 +1,21 @@
 {
     "total": {
-        "potencia": 15.605,
-        "energia_hoy": 41.42,
-        "energia_total": 90655.71
+        "potencia": 15.953,
+        "energia_hoy": 46.76,
+        "energia_total": 90661.05
     },
     "sebadal": {
-        "potencia": 15.61,
-        "ultima_produccion_valor": 15.638,
-        "ultima_produccion_hora": "2026-01-31 11:25",
+        "potencia": 15.95,
+        "ultima_produccion_valor": 15.957,
+        "ultima_produccion_hora": "2026-01-31 11:45",
         "uso_total": 0.0,
         "autoconsumo": 0.0,
         "compra_red": 0.0,
-        "exportacion_red": 15.61,
+        "exportacion_red": 15.95,
         "bateria_kw": 0.0,
         "bateria_soc": 0.0,
         "ratio_autoconsumo": 0.0,
         "ratio_autonomia": 0.0
     },
-    "actualizado": "2026-01-31 11:29:41"
+    "actualizado": "2026-01-31 11:46:24"
 }
