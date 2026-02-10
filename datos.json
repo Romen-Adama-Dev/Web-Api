@@ -7,8 +7,8 @@
     "sebadal": {
         "potencia": 0.0,
         "ultima_produccion_valor": 0.0,
-        "ultima_produccion_hora": "2026-02-10 05:40",
-        "uso_total": 1674.84,
+        "ultima_produccion_hora": "2026-02-10 06:45",
+        "uso_total": 2042.85,
         "autoconsumo": 0.0,
         "compra_red": 100.0,
         "exportacion_red": 0.0,
@@ -17,5 +17,5 @@
         "ratio_autoconsumo": 0.0,
         "ratio_autonomia": 0.0
     },
-    "actualizado": "2026-02-10 05:44:34"
+    "actualizado": "2026-02-10 06:48:12"
 }
